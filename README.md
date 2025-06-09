@@ -34,15 +34,15 @@ Contributions are welcome! If you have any suggestions or find any issues, pleas
 
 my-react-app/
 ├── public/
-│ ├── index.html
-│ └── favicon.ico
+│ ├── favicon.ico
+│ └── index.html
 │
 ├── src/
-│ ├── assets/
+│ ├── assets/ # Static assets (images, icons, fonts, etc.)
 │ │ ├── react.svg
 │ │ └── trello.svg
 │ │
-│ ├── components/ # Common reusable components
+│ ├── components/ # Reusable, “dumb” UI components
 │ │ ├── AppBar/
 │ │ │ ├── AppBar.jsx
 │ │ │ └── index.js
@@ -51,73 +51,54 @@ my-react-app/
 │ │ │ ├── Button.jsx
 │ │ │ └── index.js
 │ │ │
-│ │ ├── Card/
-│ │ │ ├── Card.jsx
-│ │ │ └── index.js
-│ │ │
-│ │ └── ModeSelect/
-│ │ ├── ModeSelect.jsx
-│ │ └── index.js
+│ │ └── … # Other generic components (Card, Modal, etc.)
 │ │
-│ ├── pages/ # Feature modules (page-level)
+│ ├── features/ # High-level “feature” folders (page‐level UIs & logic)
 │ │ ├── Auth/
 │ │ │ ├── Login.jsx
 │ │ │ ├── Register.jsx
-│ │ │ └── index.js
+│ │ │ └── index.js # Re‐export for cleaner imports
 │ │ │
 │ │ ├── Users/
-│ │ │ ├── UserList/
-│ │ │ │ ├── UserList.jsx
-│ │ │ │ └── index.js
-│ │ │ │
-│ │ │ ├── UserDetail/
-│ │ │ │ ├── UserDetail.jsx
-│ │ │ │ └── index.js
-│ │ │ │
+│ │ │ ├── UserList.jsx
+│ │ │ ├── UserDetail.jsx
 │ │ │ └── index.js
 │ │ │
 │ │ └── Boards/
-│ │ ├── BoardBar/
-│ │ │ ├── BoardBar.jsx
-│ │ │ └── index.js
-│ │ │
-│ │ ├── BoardContent/
-│ │ │ ├── BoardContent.jsx
-│ │ │ ├── index.js
-│ │ │ └── \_id.jsx # (Next.js) hoặc chỉ dùng BoardContent.jsx với React Router
-│ │ │
+│ │ ├── BoardBar.jsx
+│ │ ├── BoardContent.jsx
 │ │ └── index.js
 │ │
-│ ├── redux/ # (Nếu dùng Redux)
-│ │ ├── store.js
-│ │ └── slices/
-│ │ ├── authSlice.js
-│ │ ├── boardSlice.js
-│ │ └── userSlice.js
+│ ├── store/ # Global state (Redux slices or Context providers)
+│ │ ├── slices/ # If you’re using Redux Toolkit
+│ │ │ ├── authSlice.js
+│ │ │ ├── boardSlice.js
+│ │ │ └── userSlice.js
+│ │ │
+│ │ ├── contexts/ # If you’re using React Context instead
+│ │ │ ├── AuthContext.jsx
+│ │ │ └── BoardContext.jsx
+│ │ │
+│ │ └── store.js # Combine reducers or wrap context providers
 │ │
-│ ├── contexts/ # (Nếu dùng React Context)
-│ │ ├── AuthContext.jsx
-│ │ └── BoardContext.jsx
-│ │
-│ ├── hooks/ # Custom hooks
+│ ├── hooks/ # Custom hooks (useAuth, useBoard, etc.)
 │ │ ├── useAuth.js
 │ │ └── useBoard.js
 │ │
-│ ├── services/ # API layer
+│ ├── services/ # API layer / network calls
 │ │ ├── apiClient.js
 │ │ ├── authService.js
 │ │ └── boardService.js
 │ │
-│ ├── utils/
+│ ├── utils/ # Pure helper functions (formatDate, helpers, etc.)
 │ │ ├── formatDate.js
 │ │ └── helpers.js
 │ │
-│ ├── App.jsx
-│ ├── index.jsx
-│ ├── index.css
-│ └── reportWebVitals.js
+│ ├── App.jsx # Main App component (routes, providers, etc.)
+│ ├── index.jsx # ReactDOM.render(...) or createRoot
+│ └── index.css # Tailwind’s @tailwind directives + global styles
 │
-├── .env
+├── .env # Environment variables
 ├── .gitignore
 ├── package.json
 ├── postcss.config.js
