@@ -67,7 +67,7 @@ export function AuthProvider({ children }) {
       const { token, user: u } = res.data.data;
       localStorage.setItem("token", token);
       setUser(u);
-      navigate("/");
+      navigate("/dashboard");
     } finally {
       setLoading(false);
     }
