@@ -11,6 +11,7 @@ import RecruitmentPage from "@/components/pages/RecruitmentPage/Recruitment";
 import PostPage from "@/components/pages/PostPage/PostPage";
 import CommunityPage from "@/components/pages/Community/Community";
 import PortfolioPage from "@/components/pages/Portfolio/Portfolio";
+import Profile from '@/components/pages/Profile/Profile';
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/post" element={<PostPage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
     </Routes>
   );
