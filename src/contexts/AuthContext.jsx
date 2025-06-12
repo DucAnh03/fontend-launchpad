@@ -64,8 +64,8 @@ export function AuthProvider({ children }) {
     try {
       const res = await api.post("/auth/login", { email, password });
       // giả sử backend trả: { success, data: { token, user } }
-      const { token, user: u } = res.data.data;
-      localStorage.setItem("token", token);
+      const { accessToken, user: u } = res.data.data;
+      localStorage.setItem("token", accessToken);
       setUser(u);
       navigate("/");
     } finally {
