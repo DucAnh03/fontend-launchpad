@@ -115,7 +115,7 @@ export default function PostPage() {
         message.success("Cập nhật bài viết thành công!");
       } else {
         await api.post("/posts", formData);
-        message.success("Tạo bài viết thành công!");
+      message.success("Tạo bài viết thành công!");
       }
       
       form.resetFields();
@@ -310,7 +310,7 @@ export default function PostPage() {
                           placeholder="Thêm tags... (ví dụ: học tập, công nghệ)"
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all duration-200"
                         />
-                      </Form.Item>
+        </Form.Item>
   
                       <Form.Item>
                         <Upload
@@ -340,7 +340,7 @@ export default function PostPage() {
                             <div className="text-sm text-gray-600">Thêm ảnh</div>
                           </div>
                         </Upload>
-                      </Form.Item>
+        </Form.Item>
                     </Form>
                   </div>
   
@@ -363,7 +363,7 @@ export default function PostPage() {
                           className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-none text-white px-8 py-2.5 h-auto rounded-full shadow-md transition-all duration-200 font-medium"
                         >
                           {editingPost ? "Cập nhật" : "Đăng bài"}
-                        </Button>
+        </Button>
                       </Form.Item>
                     </div>
                   </div>
