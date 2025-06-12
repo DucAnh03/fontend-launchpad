@@ -19,12 +19,13 @@ import RecruitmentPage from "@/components/pages/RecruitmentPage/Recruitment";
 import PostPage from "@/components/pages/PostPage/PostPage";
 import CommunityPage from "@/components/pages/Community/Community";
 import PortfolioPage from "@/components/pages/Portfolio/Portfolio";
+import Profile from '@/components/pages/Profile/Profile';
 
 // pages – dashboard
-// import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage";
-// import TasksPage from "@/components/pages/Dashboard/TasksPage";
-// import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
-// import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
+import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage";
+import TasksPage from "@/components/pages/Dashboard/TasksPage";
+import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
+import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/post" element={<PostPage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
 
       {/*** Dashboard routes (auth required) ***/}
@@ -55,10 +57,10 @@ export default function App() {
         {/* Khi truy cập /dashboard sẽ tự redirect tới /dashboard/chat */}
         <Route index element={<Navigate to="chat" replace />} />
 
-        {/* <Route path="chat" element={<ChatGroupPage />} />
+        <Route path="chat" element={<ChatGroupPage />} />
         <Route path="tasks" element={<TasksPage />} />
         <Route path="projects" element={<ProjectsPage />} />
-        <Route path="performance" element={<PerformancePage />} /> */}
+        <Route path="performance" element={<PerformancePage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

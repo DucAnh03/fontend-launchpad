@@ -37,10 +37,10 @@ import api from "@/services/api/axios";
  * @property {()=>void} logout
  */
 
-const AuthContext = createContext(/** @type {AuthContextType|null} */ (null));
+const AuthContext = createContext(/** @type {AuthContextType|null} */(null));
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(/** @type {User|null} */ (null));
+  const [user, setUser] = useState(/** @type {User|null} */(null));
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem("token");
     if (token) {
       api
-        .get("/users/me")
+        .get("/users/profile")
         .then((res) => setUser(res.data.data))
         .catch(() => {
           localStorage.removeItem("token");
@@ -63,11 +63,13 @@ export function AuthProvider({ children }) {
     setLoading(true);
     try {
       const res = await api.post("/auth/login", { email, password });
-      // giả sử backend trả: { success, data: { token, user } }
-      const { token, user: u } = res.data.data;
-      localStorage.setItem("token", token);
+
+      const { accessToken, user: u } = res.data.data;
+      localStorage.setItem("token", accessToken);
       setUser(u);
-      navigate("/dashboard");
+      navigate("/");
+    } catch (error) {
+      // ...
     } finally {
       setLoading(false);
     }

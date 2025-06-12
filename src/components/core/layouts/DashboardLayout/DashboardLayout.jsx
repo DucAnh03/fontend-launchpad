@@ -1,62 +1,18 @@
 import React, { useState } from "react";
-import { Layout, Menu, Button } from "antd";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  MessageOutlined,
-  CheckSquareOutlined,
-  ProjectOutlined,
-  LineChartOutlined,
-} from "@ant-design/icons";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Layout, Button } from "antd";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import { Outlet, useLocation } from "react-router-dom";
+import AppSidebar from "@/components/elements/AppSidebar";
 import * as S from "./DashboardLayout.styles";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false);
-  const { pathname } = useLocation();
-
-  const items = [
-    {
-      key: "/dashboard/chat",
-      icon: <MessageOutlined />,
-      label: <Link to="/dashboard/chat">Nhóm chat</Link>,
-    },
-    {
-      key: "/dashboard/tasks",
-      icon: <CheckSquareOutlined />,
-      label: <Link to="/dashboard/tasks">Tasks</Link>,
-    },
-    {
-      key: "/dashboard/projects",
-      icon: <ProjectOutlined />,
-      label: <Link to="/dashboard/projects">Dự án</Link>,
-    },
-    {
-      key: "/dashboard/performance",
-      icon: <LineChartOutlined />,
-      label: <Link to="/dashboard/performance">Hiệu suất</Link>,
-    },
-  ];
+  const { user } = useAuthContext();
 
   return (
     <S.StyledLayout>
-      <S.StyledSider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
-        breakpoint="lg"
-      >
-        <S.Logo onClick={() => setCollapsed((c) => !c)}>
-          {collapsed ? "DP" : "Dashboard"}
-        </S.Logo>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[pathname]}
-          items={items}
-        />
-      </S.StyledSider>
-
+      <AppSidebar isDashboard={true} collapsed={collapsed} setCollapsed={setCollapsed} />
       <Layout>
         <S.StyledHeader>
           <Button
@@ -76,9 +32,10 @@ export default function DashboardLayout() {
               (e.currentTarget.style.transform = "rotate(0deg)")
             }
           />
-          <h2 style={{ margin: 0, transition: "color 0.3s" }}>Chào, User!</h2>
+          <h2 style={{ margin: 0, transition: "color 0.3s" }}>
+            Chào, {user?.name || 'User'}!
+          </h2>
         </S.StyledHeader>
-
         <S.ContentWrapper>
           <Outlet />
         </S.ContentWrapper>
