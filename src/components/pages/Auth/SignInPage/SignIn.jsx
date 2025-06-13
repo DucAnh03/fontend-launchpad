@@ -10,6 +10,7 @@ import {
   FaFacebookF,
   FaApple,
   FaUserShield,
+  FaExclamationCircle,
 } from "react-icons/fa";
 import "./SignIn.css";
 
@@ -20,10 +21,16 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password);
+    setError(""); // Clear any previous errors
+    try {
+      await login(email, password);
+    } catch (err) {
+      setError("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
+    }
   };
 
   // Add animation on component mount
@@ -59,6 +66,13 @@ export default function SignIn() {
             <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
             <p className="opacity-80">Sign in to access your account</p>
           </div>
+
+          {error && (
+            <div className="error-message bg-red-500 bg-opacity-20 border border-red-500 border-opacity-30 rounded-lg p-3 flex items-center space-x-2">
+              <FaExclamationCircle className="text-red-400" />
+              <span className="text-sm">{error}</span>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">

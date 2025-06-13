@@ -30,7 +30,7 @@ export default function Header() {
 
   const routes = [
     { label: "Recruitment", path: "/" },
-    { label: "Post", path: "/post" },
+    { label: "Post", path: "/posts" },
     { label: "Community", path: "/community" },
     { label: "Portfolio", path: "/portfolio" },
   ];

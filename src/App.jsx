@@ -14,7 +14,7 @@ import RequireAuth from "@/components/common/RequireAuth";
 import SignInPage from "@/components/pages/Auth/SignInPage/SignIn";
 import SignUpPage from "@/components/pages/Auth/SignUpPage/SignUp";
 import OAuthCallback from "@/components/pages/Auth/Oauth-callback/oauth-callback";
-
+import VerifySignUp from "@/components/pages/Auth/VerificationPage/VerifySignUp";
 // pages – main
 import RecruitmentPage from "@/components/pages/RecruitmentPage/Recruitment";
 import PostPage from "@/components/pages/PostPage/PostPage";
@@ -36,6 +36,7 @@ export default function App() {
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/oauth-callback" element={<OAuthCallback />} />
+        <Route path="/verify-signup" element={<VerifySignUp />} />
       </Route>
 
       {/*** Protected routes ***/}

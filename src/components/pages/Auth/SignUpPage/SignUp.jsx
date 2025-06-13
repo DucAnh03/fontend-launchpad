@@ -14,17 +14,18 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import "./SignUp.css";
+import { postRegister } from "@/services/api/auth/register";
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const { loginWithGoogle, loginWithFacebook, loading } = useAuthContext();
+  const { login, loginWithGoogle, loginWithFacebook, loading } = useAuthContext();
 
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
     password: "",
-    bio: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -41,27 +42,22 @@ export default function SignUp() {
     e.preventDefault();
     setError("");
 
+    if (formData.password !== formData.confirmPassword) {
+      setError("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      await postRegister({
+        name: formData.name,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Đăng ký thất bại");
-      }
-
-      // Redirect to login page after successful registration
-      navigate("/signin", {
-        state: { message: "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản." }
-      });
+      navigate("/verify-signup", { state: { email: formData.email, password: formData.password } });
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message || "Đăng ký thất bại");
     }
   };
 
@@ -191,16 +187,29 @@ export default function SignUp() {
               </div>
 
               <div>
-                <label htmlFor="bio" className="block text-sm font-medium mb-1">Bio (Optional)</label>
-                <textarea
-                  id="bio"
-                  name="bio"
-                  value={formData.bio}
-                  onChange={handleChange}
-                  className="input-field w-full py-3 px-4 rounded-lg text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-30"
-                  placeholder="Tell us about yourself..."
-                  rows="3"
-                />
+                <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">Confirm Password</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FaLock className="opacity-70" />
+                  </div>
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="input-field w-full py-3 pl-10 pr-10 rounded-lg text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-30"
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  >
+                    {showPassword ? <FaEyeSlash className="opacity-70 hover:opacity-100" /> : <FaEye className="opacity-70 hover:opacity-100" />}
+                  </button>
+                </div>
               </div>
             </div>
 
