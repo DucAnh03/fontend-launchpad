@@ -37,10 +37,10 @@ import api from "@/services/api/axios";
  * @property {()=>void} logout
  */
 
-const AuthContext = createContext(/** @type {AuthContextType|null} */ (null));
+const AuthContext = createContext(/** @type {AuthContextType|null} */(null));
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(/** @type {User|null} */ (null));
+  const [user, setUser] = useState(/** @type {User|null} */(null));
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -49,7 +49,9 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem("token");
     if (token) {
       api
-      .get("/users/profile")
+
+        .get("/users/profile")
+
         .then((res) => setUser(res.data.data))
         .catch(() => {
           localStorage.removeItem("token");
@@ -65,8 +67,10 @@ export function AuthProvider({ children }) {
       const res = await api.post("/auth/login", { email, password });
 
 
-      const { accessToken, user: u } = res.data.data; 
-      localStorage.setItem("token", accessToken); 
+
+      const { accessToken, user: u } = res.data.data;
+      localStorage.setItem("token", accessToken);
+
 
       setUser(u);
       navigate("/");
@@ -77,14 +81,11 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // OAuth Google
   const loginWithGoogle = () => {
     window.location.href = `${api.defaults.baseURL}/auth/google`;
   };
-
-  // OAuth Facebook
-  const loginWithFacebook = () => {
-    window.location.href = `${api.defaults.baseURL}/auth/facebook`;
+  const loginWithGithub = () => {
+    window.location.href = `${api.defaults.baseURL}/auth/github`;
   };
 
   // Logout
@@ -101,8 +102,9 @@ export function AuthProvider({ children }) {
         loading,
         login,
         loginWithGoogle,
-        loginWithFacebook,
+        loginWithGithub,
         logout,
+        setUser,
       }}
     >
       {children}

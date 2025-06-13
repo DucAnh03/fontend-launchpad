@@ -30,7 +30,7 @@ export default function Header() {
 
   const routes = [
     { label: "Recruitment", path: "/" },
-    { label: "Post", path: "/post" },
+    { label: "Post", path: "/posts" },
     { label: "Community", path: "/community" },
     { label: "Portfolio", path: "/portfolio" },
   ];
@@ -81,13 +81,7 @@ export default function Header() {
 
         {/* Actions */}
         <S.Actions>
-          <span
-            onClick={() => setDark((d) => !d)}
-            title="Toggle theme"
-            style={{ cursor: "pointer" }}
-          >
-            {dark ? <SunOutlined /> : <MoonOutlined />}
-          </span>
+
 
           <Link to="/messages" title="Messages">
             <Badge count={3}>
