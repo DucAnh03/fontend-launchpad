@@ -7,10 +7,12 @@ import * as S from "./MainLayout.styles";
 export default function MainLayout() {
   const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
-  const isHome = pathname === '/';
+  const hideSidebarOn = ['/signin', '/signup', '/oauth-callback'];
+  const showSidebar = !hideSidebarOn.includes(pathname);
+
   return (
     <S.LayoutWrapper style={{ display: 'flex', minHeight: '100vh' }}>
-      {isHome && (
+      {showSidebar && (
         <AppSidebar isDashboard={false} collapsed={collapsed} setCollapsed={setCollapsed} />
       )}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

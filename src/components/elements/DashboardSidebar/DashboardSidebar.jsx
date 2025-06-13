@@ -12,6 +12,8 @@ import * as S from "../SidebarBase.styles";
 import styled from "styled-components";
 import { Layout } from "antd";
 
+
+// Dashboard ở dashboard    
 export const StyledSider = styled(Layout.Sider)`
   min-height: 100vh;
   background: transparent !important;

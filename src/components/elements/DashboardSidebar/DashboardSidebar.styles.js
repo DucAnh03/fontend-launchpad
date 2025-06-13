@@ -14,22 +14,25 @@ export const StyledSider = styled(Layout.Sider)`
     font-size: 1.08rem;
     font-weight: 500;
     border-inline-end: none;
+    color: #222 !important;
   }
   .ant-menu-item {
     border-radius: 8px;
     margin: 4px 8px;
     transition: background 0.2s, color 0.2s;
+    color: #222 !important;
   }
   .ant-menu-item-selected {
     background: rgba(255,255,255,0.18) !important;
-    color: #fff !important;
+    color: #1890ff !important;
   }
   .ant-menu-item:hover {
     background: rgba(255,255,255,0.12) !important;
-    color: #fff !important;
+    color: #1890ff !important;
   }
   .ant-menu-item .anticon {
     font-size: 20px;
+    color: #222 !important;
   }
 `;
 
@@ -37,7 +40,7 @@ export const LogoHome = styled.div`
   display: flex;
   align-items: center;
   justify-content: ${props => (props.collapsed ? 'center' : 'flex-start')};
-  color: #fff;
+  color: #000;
   font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
@@ -47,6 +50,7 @@ export const LogoHome = styled.div`
   transition: background 0.2s;
   &:hover {
     background: rgba(255,255,255,0.12);
+    color: #1890ff;
   }
 `;
 
@@ -55,7 +59,7 @@ export const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #222;
   font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;

@@ -13,6 +13,7 @@ import RequireAuth from "@/components/common/RequireAuth";
 // pages – public
 import SignInPage from "@/components/pages/Auth/SignInPage/SignIn";
 import SignUpPage from "@/components/pages/Auth/SignUpPage/SignUp";
+import OAuthCallback from "@/components/pages/Auth/Oauth-callback/oauth-callback";
 
 // pages – main
 import RecruitmentPage from "@/components/pages/RecruitmentPage/Recruitment";
@@ -34,36 +35,27 @@ export default function App() {
       <Route element={<AuthLayout />}>
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
       </Route>
 
-      {/*** Main routes (no auth required) ***/}
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<RecruitmentPage />} />
-        <Route path="/post" element={<PostPage />} />
+      {/*** Protected routes ***/}
+      <Route element={<RequireAuth><MainLayout /></RequireAuth>}>
+        <Route path="/" element={<Navigate to="/recruitment" replace />} />
+        <Route path="/recruitment" element={<RecruitmentPage />} />
+        <Route path="/posts" element={<PostPage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
 
-      {/*** Dashboard routes (auth required) ***/}
-      <Route
-        path="/dashboard"
-        element={
-          <RequireAuth>
-            <DashboardLayout />
-          </RequireAuth>
-        }
-      >
-        {/* Khi truy cập /dashboard sẽ tự redirect tới /dashboard/chat */}
-        <Route index element={<Navigate to="chat" replace />} />
-
-        <Route path="chat" element={<ChatGroupPage />} />
-        <Route path="tasks" element={<TasksPage />} />
-        <Route path="projects" element={<ProjectsPage />} />
-        <Route path="performance" element={<PerformancePage />} />
+      {/*** Dashboard routes ***/}
+      <Route element={<RequireAuth><DashboardLayout /></RequireAuth>}>
+        <Route path="/dashboard" element={<Navigate to="/dashboard/chat" replace />} />
+        <Route path="/dashboard/chat" element={<ChatGroupPage />} />
+        <Route path="/dashboard/tasks" element={<TasksPage />} />
+        <Route path="/dashboard/projects" element={<ProjectsPage />} />
+        <Route path="/dashboard/performance" element={<PerformancePage />} />
       </Route>
-
-      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

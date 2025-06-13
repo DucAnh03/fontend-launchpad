@@ -7,8 +7,11 @@ export const HeaderWrapper = styled.header`
   left: 0;
   right: 0;
   height: 60px;
-  background: ${({ theme }) => (theme === "dark" ? "#222" : "#fff")};
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: ${({ theme }) => theme === "dark" ? "rgba(0, 0, 0, 0.8)" : "rgba(255, 255, 255, 0.8)"};
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid ${({ theme }) => theme === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"};
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
   z-index: 1000;
 `;
 
@@ -37,16 +40,16 @@ export const Nav = styled.nav`
   a {
     color: ${({ theme, active }) =>
       active
-        ? theme === "dark"
-          ? "#ffd700"
-          : "#1890ff"
+        ? "#1890ff"
         : theme === "dark"
-        ? "#ccc"
-        : "#555"};
+        ? "#fff"
+        : "#333"};
     text-decoration: none;
     font-weight: ${({ active }) => (active ? 600 : 400)};
+    transition: all 0.3s ease;
     &:hover {
-      opacity: 0.8;
+      color: #1890ff;
+      transform: translateY(-2px);
     }
   }
 `;
@@ -57,4 +60,24 @@ export const Actions = styled.div`
   align-items: center;
   gap: 1rem;
   font-size: 1.25rem;
+  color: ${({ theme }) => (theme === "dark" ? "#fff" : "#333")};
+  
+  a {
+    color: ${({ theme }) => (theme === "dark" ? "#fff" : "#333")};
+    transition: all 0.3s ease;
+    &:hover {
+      color: #1890ff;
+      transform: translateY(-2px);
+    }
+  }
+  
+  .ant-btn-primary {
+    background: linear-gradient(to right, #667eea, #764ba2);
+    border: none;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+  }
 `;

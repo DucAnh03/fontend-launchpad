@@ -19,7 +19,7 @@ export default function DashboardBar() {
     }
 
     return (
-        <div style={{ padding: '16px 24px', background: 'rgba(141, 32, 32, 0.08)', position: 'relative' }}>
+        <div style={{ padding: '16px 24px', background: '#fff', position: 'relative', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', color: '#222' }}>
             <Button
                 type="text"
                 icon={<DashboardOutlined />}
@@ -30,23 +30,23 @@ export default function DashboardBar() {
             </Button>
             <Row gutter={16}>
                 <Col span={6}>
-                    <Card>
-                        <Statistic title="Tổng số dự án" value={5} />
+                    <Card style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRadius: 8 }}>
+                        <Statistic title="Tổng số dự án" value={5} valueStyle={{ color: '#222' }} titleStyle={{ color: '#555' }} />
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card>
-                        <Statistic title="Tasks đang thực hiện" value={8} />
+                    <Card style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRadius: 8 }}>
+                        <Statistic title="Tasks đang thực hiện" value={8} valueStyle={{ color: '#222' }} titleStyle={{ color: '#555' }} />
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card>
-                        <Statistic title="Tin nhắn chưa đọc" value={3} />
+                    <Card style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRadius: 8 }}>
+                        <Statistic title="Tin nhắn chưa đọc" value={3} valueStyle={{ color: '#222' }} titleStyle={{ color: '#555' }} />
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card>
-                        <Statistic title="Hiệu suất" value={85} suffix="%" />
+                    <Card style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRadius: 8 }}>
+                        <Statistic title="Hiệu suất" value={85} suffix="%" valueStyle={{ color: '#222' }} titleStyle={{ color: '#555' }} />
                     </Card>
                 </Col>
             </Row>

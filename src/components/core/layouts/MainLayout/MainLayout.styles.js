@@ -6,8 +6,10 @@ export const LayoutWrapper = styled.div`
 `;
 
 export const Body = styled.main`
-  padding-top: 60px; /* = chiều cao header */
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
 `;

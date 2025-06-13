@@ -10,6 +10,9 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as S from "./SidebarBase.styles";
 
+
+
+// Dashboard ở home 
 export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
     const { pathname } = useLocation();
     const navigate = useNavigate();
