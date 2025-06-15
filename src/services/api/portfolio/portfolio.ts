@@ -7,6 +7,7 @@ export interface IPortfolioItem {
   summary: string;
   description: string;
   coverImage: { url: string; altText: string; };
+  lessonsLearned?: string;
   myRole: string;
   technologies: string[];
   gallery?: { url: string; caption: string; }[];
