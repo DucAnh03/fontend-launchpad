@@ -42,9 +42,7 @@ export default function PortfolioDetailModal({ itemId, onClose }: PortfolioDetai
         return () => window.removeEventListener('keydown', handleEsc);
     }, [onClose]);
 
-
     return (
-        // Lớp phủ nền
         <div 
             className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4 animate-fade-in"
             onClick={onClose} // Đóng modal khi click ra ngoài
@@ -59,7 +57,9 @@ export default function PortfolioDetailModal({ itemId, onClose }: PortfolioDetai
                     onClick={onClose}
                     className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl z-10"
                 >
-                    <FiX />
+                    <span className="inline-block">
+                        <FiX />
+                    </span>
                 </button>
 
                 {loading && <div className="p-10 text-center">Đang tải chi tiết...</div>}
@@ -77,7 +77,7 @@ export default function PortfolioDetailModal({ itemId, onClose }: PortfolioDetai
                                 <p className="text-gray-700 whitespace-pre-wrap">{item.description}</p>
                             </div>
 
-                             <div className="mb-6">
+                            <div className="mb-6">
                                 <h3 className="text-xl font-semibold mb-3 border-b pb-2">Công nghệ</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {item.technologies.map(tech => (
@@ -100,13 +100,17 @@ export default function PortfolioDetailModal({ itemId, onClose }: PortfolioDetai
                             <div className="flex flex-wrap gap-4 mt-8 border-t pt-6">
                                 {item.liveUrl && (
                                     <a href={item.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                                        <FiExternalLink />
+                                        <span className="inline-block">
+                                            <FiExternalLink />
+                                        </span>
                                         Live Demo
                                     </a>
                                 )}
                                 {item.sourceCodeUrl && (
                                     <a href={item.sourceCodeUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-black">
-                                        <FiGithub />
+                                        <span className="inline-block">
+                                            <FiGithub />
+                                        </span>
                                         Source Code
                                     </a>
                                 )}
