@@ -3,47 +3,68 @@ import { Layout } from "antd";
 
 export const StyledSider = styled(Layout.Sider)`
   min-height: 100vh;
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-right: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  background-color: #3668b5 !important; /* Màu xanh đậm từ Bitrix24 */
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
   padding-top: 12px;
-  
+
   .ant-menu {
     background: transparent;
     font-size: 1.08rem;
     font-weight: 500;
     border-inline-end: none;
-    color: rgba(210, 104, 104, 0.8) !important;
+    color: #ffffff !important; /* Màu chữ trắng */
   }
-  
-  .ant-menu-item {
+
+  .ant-menu-item, .ant-menu-submenu-title {
     border-radius: 8px;
     margin: 4px 8px;
     transition: all 0.3s ease;
-    color: rgba(193, 93, 93, 0.8) !important;
-    
+    color: #ffffff !important; /* Màu chữ trắng */
+    padding-left: 24px !important; /* Tăng padding để tạo khoảng trống cho icon */
+
     &:hover {
-      background: rgba(177, 82, 82, 0.2) !important;
-      color: #fff !important;
-      transform: translateY(-2px);
+      background-color: rgba(255, 255, 255, 0.1) !important; /* Nền trắng hơi trong suốt khi hover */
+      color: #ffffff !important;
+      transform: none; /* Bỏ hiệu ứng translateY */
     }
   }
   
   .ant-menu-item-selected {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: #fff !important;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    background-color: rgba(255, 255, 255, 0.15) !important; /* Nền trắng đậm hơn khi chọn */
+    color: #ffffff !important;
+    box-shadow: none; /* Bỏ đổ bóng */
   }
-  
-  .ant-menu-item .anticon {
+
+  .ant-menu-item .anticon, .ant-menu-submenu-title .anticon {
     font-size: 20px;
-    color: rgba(173, 135, 135, 0.8) !important;
+    color: #ffffff !important; /* Màu icon trắng */
+  }
+
+  .ant-menu-item-selected .anticon {
+    color: #ffffff !important; /* Màu icon trắng khi chọn */
+  }
+
+  /* Style cho submenu header (ví dụ: "Hợp tác") */
+  .ant-menu-submenu-title {
+    font-size: 0.9rem; /* Nhỏ hơn một chút */
+    font-weight: bold;
+    color: #a0aec0 !important; /* Màu xám nhạt cho header */
+    margin-bottom: 0px;
+    padding-left: 16px !important; /* Padding cho header */
+
+    &:hover {
+      background-color: transparent !important; /* Header không thay đổi màu khi hover */
+    }
   }
   
-  .ant-menu-item-selected .anticon {
-    color: #fff !important;
+  .ant-menu-submenu-title .ant-menu-submenu-arrow {
+    color: #a0aec0 !important; /* Màu mũi tên xám nhạt */
+  }
+
+  /* Kích thước và màu của badge */
+  .ant-badge-count {
+    background-color: #ff4d4f !important; /* Màu đỏ */
+    box-shadow: none !important;
   }
 `;
 
@@ -52,7 +73,7 @@ export const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color:rgb(207, 100, 100);
+  color: #ffffff; /* Màu trắng cho logo */
   font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;
@@ -61,7 +82,7 @@ export const Logo = styled.div`
   transition: all 0.3s ease;
   
   &:hover {
-    transform: translateY(-2px);
-    text-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transform: none; /* Bỏ hiệu ứng translateY */
+    text-shadow: none; /* Bỏ đổ bóng text */
   }
-`; 
+`;

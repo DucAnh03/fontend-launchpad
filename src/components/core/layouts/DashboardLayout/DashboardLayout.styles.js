@@ -17,7 +17,7 @@ const fadeIn = keyframes`
 
 export const StyledLayout = styled(Layout)`
   min-height: 100vh;
-  background:rgb(186, 129, 185);
+  background: #f7f8fa;
 `;
 
 export const StyledSider = styled(Sider)`
