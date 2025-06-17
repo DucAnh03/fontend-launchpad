@@ -1,6 +1,5 @@
-import axios from '../axios'; // Đảm bảo đường dẫn đến axios instance là đúng
+import axios from '../axios'; 
 
-// Interface cho dữ liệu trả về (có thể không cần nếu chỉ post)
 export interface IPortfolioItem {
   _id: string;
   title: string;
@@ -13,13 +12,9 @@ export interface IPortfolioItem {
   gallery?: { url: string; caption: string; }[];
   liveUrl?: string;
   sourceCodeUrl?: string;
-  // ... các trường khác
 }
 
-/**
- * Tạo một mục portfolio mới
- * @param portfolioData - Dữ liệu dạng FormData
- */
+
 export async function createPortfolio(portfolioData: FormData): Promise<IPortfolioItem> {
   const { data } = await axios.post('/portfolio', portfolioData, {
     headers: {
@@ -31,9 +26,14 @@ export async function createPortfolio(portfolioData: FormData): Promise<IPortfol
 
 export async function getAllPortfolios(): Promise<IPortfolioItem[]> {
   const { data } = await axios.get('/portfolio');
-  return data.data || []; // Giả sử backend trả về { data: [...] }
+  return data.data || []; 
 }
-export async function getPortfolioById(id: string): Promise<IPortfolioItem> {
-    const { data } = await axios.get(`/portfolio/${id}`);
-    return data.metadata; 
+export async function getPortfolioById(id: string): Promise<IPortfolioItem | null> {
+    try {
+        const { data } = await axios.get(`/portfolio/${id}`);
+        return data.data; 
+    } catch (error) {
+        console.error(`Error fetching portfolio by id ${id}:`, error);
+        return null;
+    }
 }

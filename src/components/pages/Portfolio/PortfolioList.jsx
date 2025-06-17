@@ -59,7 +59,6 @@ export default function PortfolioList() {
                                     <p className="text-gray-600 text-base mb-4">{item.summary}</p>
                                 </div>
                                 <div className="mt-6 flex justify-end">
-                                    {/* NÚT BẤM CỦA BẠN GỌI HÀM handleViewDetails Ở ĐÂY */}
                                     <button 
                                         onClick={() => handleViewDetails(item._id)}
                                         className="font-semibold text-blue-600 hover:text-blue-800 transition-colors"
@@ -74,9 +73,6 @@ export default function PortfolioList() {
             ) : (
                 <p>Chưa có dự án nào để hiển thị.</p>
             )}
-
-            {/* ----- PHẦN 3: RENDER MODAL KHI CÓ ĐIỀU KIỆN ----- */}
-            {/* Modal chỉ hiển thị khi isModalOpen là true VÀ đã có selectedItemId */}
             {isModalOpen && selectedItemId && (
                 <PortfolioDetailModal itemId={selectedItemId} onClose={handleCloseModal} />
             )}

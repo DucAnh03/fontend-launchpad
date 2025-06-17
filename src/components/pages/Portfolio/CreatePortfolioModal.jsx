@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-// Đảm bảo đường dẫn này đúng
 import { createPortfolio } from '../../../services/api/portfolio/portfolio';
 
 export default function CreatePortfolioModal({ onClose, onSuccess }) {
-  // --- LOGIC FORM VÀ STATE GIỮ NGUYÊN ---
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
   const [description, setDescription] = useState('');
@@ -91,9 +89,7 @@ export default function CreatePortfolioModal({ onClose, onSuccess }) {
               <button type="button" onClick={onClose} className="text-3xl text-gray-400 hover:text-gray-700">&times;</button>
           </div>
           
-          {/* Vùng có thể cuộn cho các trường input */}
           <div className="max-h-[65vh] overflow-y-auto pr-4 -mr-4 space-y-4">
-            {/* ----- CÁC TRƯỜNG BẮT BUỘC ----- */}
             <div className="space-y-1">
                 <label htmlFor="title" className="font-semibold">Tiêu đề dự án *</label>
                 <input type="text" id="title" value={title} onChange={e => setTitle(e.target.value)} className="w-full p-3 border rounded-lg" />
@@ -114,8 +110,6 @@ export default function CreatePortfolioModal({ onClose, onSuccess }) {
                 <label htmlFor="coverImage" className="font-semibold">Ảnh bìa *</label>
                 <input type="file" id="coverImage" onChange={e => setCoverImage(e.target.files ? e.target.files[0] : null)} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
             </div>
-
-            {/* ----- CÁC TRƯỜNG TÙY CHỌN (ĐÃ ĐƯỢC THÊM ĐẦY ĐỦ) ----- */}
             <div className="space-y-1">
                 <label htmlFor="lessonsLearned" className="font-semibold">Bài học kinh nghiệm</label>
                 <textarea id="lessonsLearned" value={lessonsLearned} onChange={e => setLessonsLearned(e.target.value)} rows={3} className="w-full p-3 border rounded-lg" />
