@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Form, Input, Button, message, Card, Modal, Upload, Space, Popconfirm, Tag } from "antd";
-import { UploadOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import { Form, Input, Button, message, Card, Modal, Upload, Space, Popconfirm, Tag, Dropdown, Menu } from "antd";
+import { UploadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, EllipsisOutlined } from "@ant-design/icons";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import api from "@/services/api/axios";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 export default function PostPage() {
   const [loading, setLoading] = useState(false);
@@ -17,12 +18,12 @@ export default function PostPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSearching, setIsSearching] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-
+  const navigate = useNavigate();
   const fetchPosts = async (page = 1, isNewSearch = false) => {
     try {
       setLoading(true);
       let response;
-      
+
       if (searchKeyword) {
         response = await api.get(`/posts/search?keyword=${searchKeyword}&page=${page}&limit=10`);
       } else {
@@ -32,16 +33,16 @@ export default function PostPage() {
       if (response.data.success && response.data.data) {
         const newPosts = response.data.data.posts || [];
         const total = response.data.data.pagination.total;
-        
+
         console.log('Posts data from API:', newPosts);
         console.log('First post author data:', newPosts[0]?.authorId);
-        
+
         if (isNewSearch) {
           setPosts(newPosts);
         } else {
           setPosts(prevPosts => [...prevPosts, ...newPosts]);
         }
-        
+
         // Kiểm tra xem còn bài post nào để load không
         setHasMore(posts.length + newPosts.length < total);
         setCurrentPage(page);
@@ -82,19 +83,19 @@ export default function PostPage() {
       const formData = new FormData();
       formData.append("title", values.title);
       formData.append("content", values.content);
-      
+
       // Handle tags
       if (values.tags) {
-        const tagsArray = values.tags.split(',').map(tag => tag.trim()).filter(tag => tag); 
+        const tagsArray = values.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
         const tagsJson = JSON.stringify(tagsArray);
         formData.append("tags", tagsJson);
       }
-      
+
       // Log the entire FormData
       for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + pair[1]);
       }
-      
+
       // Handle images
       let mediaUrls = [];
       fileList.forEach((file) => {
@@ -110,14 +111,14 @@ export default function PostPage() {
       if (editingPost) {
         // Always send mediaUrls as a JSON stringified array
         formData.append("mediaUrls", JSON.stringify(mediaUrls));
-        
+
         await api.put(`/posts/${editingPost._id}`, formData);
         message.success("Cập nhật bài viết thành công!");
       } else {
         await api.post("/posts", formData);
-      message.success("Tạo bài viết thành công!");
+        message.success("Tạo bài viết thành công!");
       }
-      
+
       form.resetFields();
       setFileList([]);
       setEditingPost(null);
@@ -160,7 +161,7 @@ export default function PostPage() {
 
     setEditingPost(post);
     form.resetFields();
-    
+
     // Convert existing images to fileList format
     const existingImages = post.mediaUrls?.map((url, index) => ({
       uid: `-${index}`,
@@ -188,6 +189,52 @@ export default function PostPage() {
     form.resetFields();
   };
 
+   const handleSendMessage = async (author) => {
+        if (!author || !author._id) {
+            message.error("Không tìm thấy thông tin tác giả.");
+            return;
+        }
+        
+        try {
+            // Gọi API để lấy hoặc tạo conversation
+            const response = await api.post('/conversations/find-or-create', {
+                receiverId: author._id
+            });
+            
+            const conversation = response.data.data;
+            if (conversation && conversation._id) {
+                // Điều hướng đến trang chat và truyền conversationId qua state
+                navigate('/dashboard/messages', { 
+                    state: { 
+                        activeConversationId: conversation._id 
+                    } 
+                });
+            }
+        } catch (error) {
+            message.error("Không thể bắt đầu cuộc trò chuyện.");
+            console.error("Lỗi khi tạo cuộc trò chuyện:", error);
+        }
+    };
+
+
+  // Hàm này tạo ra component Menu cho Dropdown
+  const createPostMenu = (post) => (
+    <Menu
+      items={[
+        {
+          key: '1',
+          label: (
+            <a onClick={() => handleSendMessage(post.authorId)}>
+              Nhắn tin
+            </a>
+          ),
+        },
+        // Bạn có thể thêm các chức năng khác tại đây
+      ]}
+    />
+  );
+
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-2xl mx-auto px-4 py-6">
@@ -196,7 +243,7 @@ export default function PostPage() {
             <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-3"></div>
             {editingPost ? "Chỉnh sửa bài viết" : "Bảng tin"}
           </h1>
-  
+
           {/* Search Bar */}
           <div className="flex gap-3 mb-6">
             <div className="relative flex-1">
@@ -209,7 +256,7 @@ export default function PostPage() {
               />
               <SearchOutlined className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
-            <Button 
+            <Button
               type="primary"
               onClick={handleSearch}
               loading={isSearching}
@@ -219,7 +266,7 @@ export default function PostPage() {
             </Button>
           </div>
         </div>
-  
+
         {user && (
           <>
             {/* Create Post Button */}
@@ -228,13 +275,13 @@ export default function PostPage() {
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
                   {user.name?.charAt(0) || 'U'}
                 </div>
-                <button 
+                <button
                   onClick={() => setShowCreateModal(true)}
                   className="flex-1 text-left px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-500 transition-all duration-200"
                 >
                   Bạn đang nghĩ gì?
                 </button>
-                <Button 
+                <Button
                   type="primary"
                   onClick={() => setShowCreateModal(true)}
                   className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-none rounded-full px-6 shadow-md"
@@ -243,7 +290,7 @@ export default function PostPage() {
                 </Button>
               </div>
             </div>
-  
+
             {/* Modal Form - Only show when creating/editing */}
             {(editingPost || showCreateModal) && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -253,7 +300,7 @@ export default function PostPage() {
                       <h3 className="text-lg font-semibold text-gray-900">
                         {editingPost ? "Chỉnh sửa bài viết" : "Tạo bài viết mới"}
                       </h3>
-                      <button 
+                      <button
                         onClick={() => {
                           handleCancel();
                           setShowCreateModal(false);
@@ -266,7 +313,7 @@ export default function PostPage() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
@@ -277,41 +324,41 @@ export default function PostPage() {
                         <div className="text-xs text-gray-500">Công khai</div>
                       </div>
                     </div>
-  
-                    <Form 
+
+                    <Form
                       form={form}
-                      layout="vertical" 
+                      layout="vertical"
                       onFinish={onFinish}
                       className="space-y-4"
                     >
-                      <Form.Item 
-                        name="title" 
+                      <Form.Item
+                        name="title"
                         rules={[{ required: true, message: 'Vui lòng nhập tiêu đề' }]}
                       >
-                        <Input 
+                        <Input
                           placeholder="Tiêu đề bài viết..."
-                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all duration-200" 
+                          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all duration-200"
                         />
                       </Form.Item>
-                      
-                      <Form.Item 
+
+                      <Form.Item
                         name="content"
                       >
-                        <Input.TextArea 
-                          rows={4} 
+                        <Input.TextArea
+                          rows={4}
                           placeholder="Bạn đang nghĩ gì?"
                           className="w-full px-4 py-3 border-none focus:ring-0 focus:border-none transition-all duration-200 resize-none"
                           style={{ boxShadow: 'none' }}
                         />
                       </Form.Item>
-  
+
                       <Form.Item name="tags">
-                        <Input 
+                        <Input
                           placeholder="Thêm tags... (ví dụ: học tập, công nghệ)"
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all duration-200"
                         />
-        </Form.Item>
-  
+                      </Form.Item>
+
                       <Form.Item>
                         <Upload
                           listType="picture-card"
@@ -340,13 +387,13 @@ export default function PostPage() {
                             <div className="text-sm text-gray-600">Thêm ảnh</div>
                           </div>
                         </Upload>
-        </Form.Item>
+                      </Form.Item>
                     </Form>
                   </div>
-  
+
                   <div className="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4 rounded-b-2xl">
                     <div className="flex items-center justify-end gap-3">
-                      <Button 
+                      <Button
                         onClick={() => {
                           handleCancel();
                           setShowCreateModal(false);
@@ -356,14 +403,14 @@ export default function PostPage() {
                         Hủy
                       </Button>
                       <Form.Item className="mb-0">
-                        <Button 
-                          type="primary" 
+                        <Button
+                          type="primary"
                           onClick={() => form.submit()}
                           loading={loading}
                           className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-none text-white px-8 py-2.5 h-auto rounded-full shadow-md transition-all duration-200 font-medium"
                         >
                           {editingPost ? "Cập nhật" : "Đăng bài"}
-        </Button>
+                        </Button>
                       </Form.Item>
                     </div>
                   </div>
@@ -372,13 +419,13 @@ export default function PostPage() {
             )}
           </>
         )}
-  
+
         <div className="space-y-5">
           <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
             <div className="w-1 h-5 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-3"></div>
             {searchKeyword ? `Kết quả tìm kiếm cho "${searchKeyword}"` : "Bài viết"}
           </h2>
-          
+
           <InfiniteScroll
             dataLength={posts.length}
             next={loadMoreData}
@@ -395,8 +442,8 @@ export default function PostPage() {
             }
           >
             {posts.map((post) => (
-              <div 
-                key={post._id} 
+              <div
+                key={post._id}
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-5 transition-all duration-200 hover:shadow-md"
               >
                 <div className="p-6">
@@ -417,41 +464,34 @@ export default function PostPage() {
                             })}
                           </p>
                         </div>
-                        {user && post.authorId && String(post.authorId._id) === String(user._id) && (
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => handleEdit(post)}
-                              className="text-gray-400 hover:text-blue-500 p-2 rounded-full hover:bg-blue-50 transition-all duration-200"
-                            >
-                              <EditOutlined />
-                            </button>
-                            <Popconfirm
-                              title="Bạn có chắc muốn xóa bài viết này?"
-                              onConfirm={() => handleDelete(post._id)}
-                              okText="Có"
-                              cancelText="Không"
-                              placement="bottomRight"
-                            >
-                              <button className="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 transition-all duration-200">
-                                <DeleteOutlined />
-                              </button>
-                            </Popconfirm>
-                          </div>
-                        )}
+                        <Dropdown
+                          overlay={createPostMenu(post)}
+                          trigger={['click']}
+                          placement="bottomRight"
+                          arrow
+                        >
+                          <button
+                            className="text-gray-400 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-all duration-200"
+                            style={{ lineHeight: 0 }}
+                          >
+                            <EllipsisOutlined style={{ fontSize: 22, verticalAlign: "middle" }} />
+                          </button>
+                        </Dropdown>
                       </div>
+
                     </div>
                   </div>
-                  
+
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">{post.title}</h3>
                   {post.content && post.content !== "undefined" && (
                     <p className="text-gray-700 mb-4 whitespace-pre-wrap leading-relaxed">{post.content}</p>
                   )}
-  
+
                   {post.tags && post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-4">
                       {post.tags.map((tag, index) => (
-                        <Tag 
-                          key={index} 
+                        <Tag
+                          key={index}
                           className="bg-blue-50 text-blue-600 border-blue-100 rounded-full px-3 py-1 text-xs font-medium"
                         >
                           #{tag}
@@ -459,19 +499,18 @@ export default function PostPage() {
                       ))}
                     </div>
                   )}
-                  
+
                   {post.mediaUrls?.length > 0 && (
-                    <div className={`grid gap-2 mt-4 ${
-                      post.mediaUrls.length === 1 ? 'grid-cols-1' :
-                      post.mediaUrls.length === 2 ? 'grid-cols-2' :
-                      post.mediaUrls.length === 3 ? 'grid-cols-2' :
-                      'grid-cols-2 sm:grid-cols-3'
-                    }`}>
+                    <div className={`grid gap-2 mt-4 ${post.mediaUrls.length === 1 ? 'grid-cols-1' :
+                        post.mediaUrls.length === 2 ? 'grid-cols-2' :
+                          post.mediaUrls.length === 3 ? 'grid-cols-2' :
+                            'grid-cols-2 sm:grid-cols-3'
+                      }`}>
                       {post.mediaUrls.map((image, index) => {
                         if (post.mediaUrls.length === 3 && index === 0) {
                           return (
                             <div key={index} className="col-span-2 aspect-video relative rounded-xl overflow-hidden">
-                              <img 
+                              <img
                                 src={image || "/placeholder.svg"}
                                 alt={`Post image ${index + 1}`}
                                 className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
@@ -481,7 +520,7 @@ export default function PostPage() {
                         }
                         return (
                           <div key={index} className={`${post.mediaUrls.length === 1 ? 'aspect-video' : 'aspect-square'} relative rounded-xl overflow-hidden`}>
-                            <img 
+                            <img
                               src={image || "/placeholder.svg"}
                               alt={`Post image ${index + 1}`}
                               className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
@@ -491,7 +530,7 @@ export default function PostPage() {
                       })}
                     </div>
                   )}
-  
+
                   <div className="flex items-center justify-center gap-8 mt-5 pt-4 border-t border-gray-100">
                     <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-green-500 transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-green-50 group">
                       <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -500,7 +539,7 @@ export default function PostPage() {
                       <span className="text-xs font-medium">Upvote</span>
                       <span className="text-xs text-gray-400">0</span>
                     </button>
-                    
+
                     <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-red-500 transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-red-50 group">
                       <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
