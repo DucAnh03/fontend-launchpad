@@ -33,9 +33,6 @@ export default function PostPage() {
         const newPosts = response.data.data.posts || [];
         const total = response.data.data.pagination.total;
         
-        console.log('Posts data from API:', newPosts);
-        console.log('First post author data:', newPosts[0]?.authorId);
-        
         if (isNewSearch) {
           setPosts(newPosts);
         } else {
