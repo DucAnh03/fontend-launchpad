@@ -6,6 +6,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AuthLayout from "@/components/core/layouts/AuthLayout/AuthLayout";
 import MainLayout from "@/components/core/layouts/MainLayout/MainLayout";
 import DashboardLayout from "@/components/core/layouts/DashboardLayout/DashboardLayout";
+import ProfileLayout from "@/components/core/layouts/ProfileLayout/ProfileLayout";
 
 // auth guard
 import RequireAuth from "@/components/common/RequireAuth";
@@ -15,12 +16,20 @@ import SignInPage from "@/components/pages/Auth/SignInPage/SignIn";
 import SignUpPage from "@/components/pages/Auth/SignUpPage/SignUp";
 import OAuthCallback from "@/components/pages/Auth/Oauth-callback/oauth-callback";
 import VerifySignUp from "@/components/pages/Auth/VerificationPage/VerifySignUp";
+
 // pages – main
 import RecruitmentPage from "@/components/pages/RecruitmentPage/Recruitment";
+import CreateRecruitment from "@/components/pages/RecruitmentPage/CreateRecruitment";
+import RecruitmentDetail from "@/components/pages/RecruitmentPage/RecruitmentDetail";
 import PostPage from "@/components/pages/PostPage/PostPage";
 import CommunityPage from "@/components/pages/Community/Community";
 import PortfolioPage from "@/components/pages/Portfolio/Portfolio";
-import Profile from '@/components/pages/Profile/Profile';
+
+// pages – profile nested
+import Overview from "@/components/pages/Profile/Overview";
+import RecruitmentList from "@/components/pages/Profile/RecruitmentList";
+import PostsList from "@/components/pages/Profile/PostsList";
+import PortfolioList from "@/components/pages/Profile/PortfolioList";
 
 // pages – dashboard
 import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage";
@@ -43,10 +52,19 @@ export default function App() {
       <Route element={<RequireAuth><MainLayout /></RequireAuth>}>
         <Route path="/" element={<Navigate to="/recruitment" replace />} />
         <Route path="/recruitment" element={<RecruitmentPage />} />
+        <Route path="/recruitment/create" element={<CreateRecruitment />} />
+        <Route path="/recruitment/:id" element={<RecruitmentDetail />} />
         <Route path="/posts" element={<PostPage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
-        <Route path="/profile" element={<Profile />} />
+
+        {/*** nested Profile ***/}
+        <Route path="/profile" element={<ProfileLayout />}>
+          <Route index element={<Overview />} />
+          <Route path="recruitment" element={<RecruitmentList />} />
+          <Route path="posts" element={<PostsList />} />
+          <Route path="portfolio" element={<PortfolioList />} />
+        </Route>
       </Route>
 
       {/*** Dashboard routes ***/}
