@@ -105,41 +105,6 @@ export default function DashboardSidebar({ collapsed, setCollapsed }) {
             ),
             label: <Link to="/dashboard/tasks">Tác vụ và Dự án</Link>,
         },
-        // Các mục khác theo ảnh Bitrix24
-        {
-            key: "/dashboard/crm", // Giả định route cho CRM
-            icon: <ToolOutlined />,
-            label: <Link to="/dashboard/crm">CRM</Link>,
-        },
-        {
-            key: "/dashboard/booking", // Giả định route cho Đặt chỗ
-            icon: <ClockCircleOutlined />,
-            label: <Link to="/dashboard/booking">Đặt chỗ</Link>,
-        },
-        {
-            key: "/dashboard/inventory", // Giả định route cho Quản lý kho hàng
-            icon: <ShopOutlined />,
-            label: <Link to="/dashboard/inventory">Quản lý kho hàng</Link>,
-        },
-        {
-            key: "/dashboard/marketing", // Giả định route cho Tiếp thị
-            icon: <RocketOutlined />,
-            label: <Link to="/dashboard/marketing">Tiếp thị</Link>,
-        },
-        {
-            key: "/dashboard/website", // Giả định route cho Website và cửa hàng
-            icon: <ShoppingCartOutlined />,
-            label: <Link to="/dashboard/website">Website và cửa hàng</Link>,
-        },
-        {
-            key: "divider-1", // Kẻ phân cách
-            type: 'divider',
-        },
-        {
-            key: "/dashboard/settings", // Giả định route cho Cài đặt
-            icon: <SettingOutlined />,
-            label: <Link to="/dashboard/settings">Cài đặt</Link>,
-        },
     ];
 
     return (

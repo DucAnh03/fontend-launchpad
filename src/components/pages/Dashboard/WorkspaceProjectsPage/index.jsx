@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "@/services/api/axios";
 import { Card, Button, Modal, Form, Input, Select, message, Popconfirm, Tag, Tooltip } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { EditOutlined, DeleteOutlined, CalendarOutlined, CheckCircleOutlined, HourglassOutlined, StopOutlined } from "@ant-design/icons";
 
@@ -20,13 +21,13 @@ const statusLabel = {
   archived: "Lưu trữ",
 };
 
-export default function ProjectsPage() {
+export default function WorkspaceProjectsPage() {
+  const { workspaceId } = useParams();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searching, setSearching] = useState(false);
-  const [search, setSearch] = useState("");
   const [error, setError] = useState(null);
   const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   // State cho edit modal
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -37,36 +38,17 @@ export default function ProjectsPage() {
   useEffect(() => {
     fetchProjects();
     // eslint-disable-next-line
-  }, []);
+  }, [workspaceId]);
 
   async function fetchProjects() {
-    setLoading(true);
-    setError(null);
     try {
-      const res = await api.get("/projects/my");
+      setLoading(true);
+      const res = await api.get(`/workspaces/${workspaceId}/projects`);
       setProjects(res.data.data);
     } catch (err) {
       setError("Không thể tải danh sách project.");
     } finally {
       setLoading(false);
-    }
-  }
-
-  // Search project
-  async function handleSearch(value) {
-    setSearch(value);
-    if (!value) {
-      fetchProjects();
-      return;
-    }
-    setSearching(true);
-    try {
-      const res = await api.get(`/projects/search?keyword=${encodeURIComponent(value)}`);
-      setProjects(res.data.data);
-    } catch (err) {
-      message.error("Không tìm thấy project phù hợp.");
-    } finally {
-      setSearching(false);
     }
   }
 
@@ -118,20 +100,12 @@ export default function ProjectsPage() {
 
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
+      <Button onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>← Quay lại Workspace</Button>
       <Card
-        title={<span className="text-2xl font-bold text-blue-700">Các project bạn tham gia</span>}
+        title={<span className="text-2xl font-bold text-blue-700">Project trong workspace</span>}
         className="shadow-2xl rounded-2xl max-w-screen-xl mx-auto"
         headStyle={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '2px solid #f0f0f0', background: "#f5faff" }}
         bodyStyle={{ background: "#fafdff" }}
-        extra={
-          <Input.Search
-            allowClear
-            placeholder="Tìm kiếm project theo tên hoặc thành viên..."
-            onSearch={handleSearch}
-            loading={searching}
-            style={{ width: 320 }}
-          />
-        }
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project) => (
@@ -158,8 +132,7 @@ export default function ProjectsPage() {
                 </div>
                 <div className="flex items-center gap-2 text-gray-500 text-sm mb-2">
                   <span>
-                    Thành viên:{" "}
-                    {project.members?.length || 1}
+                    Thành viên: {project.members?.length || 1}
                   </span>
                   {isLeader(project) && (
                     <Tooltip title="Bạn là trưởng nhóm">

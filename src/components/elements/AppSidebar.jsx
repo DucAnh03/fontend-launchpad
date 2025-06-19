@@ -6,6 +6,7 @@ import {
     ProjectOutlined,
     LineChartOutlined,
     HomeOutlined,
+    AppstoreOutlined
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as S from "./SidebarBase.styles";
@@ -17,6 +18,11 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
     const { pathname } = useLocation();
     const navigate = useNavigate();
     const items = [
+        {
+            key: "/dashboard/workspace", // <-- Thêm mục Workspace
+            icon: <AppstoreOutlined />,
+            label: <Link to="/dashboard/workspace">Workspace</Link>,
+        },
         {
             key: "/dashboard/chat",
             icon: <MessageOutlined />,

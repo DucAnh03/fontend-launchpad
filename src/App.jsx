@@ -23,6 +23,8 @@ import PortfolioPage from "@/components/pages/Portfolio/Portfolio";
 import Profile from '@/components/pages/Profile/Profile';
 
 // pages – dashboard
+import WorkspacePage from "@/components/pages/Dashboard/WorkspacePage";
+import WorkspaceProjectsPage from "@/components/pages/Dashboard/WorkspaceProjectsPage";
 import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage";
 import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
@@ -52,6 +54,8 @@ export default function App() {
       {/*** Dashboard routes ***/}
       <Route element={<RequireAuth><DashboardLayout /></RequireAuth>}>
         <Route path="/dashboard" element={<Navigate to="/dashboard/chat" replace />} />
+        <Route path="/dashboard/workspace" element={<WorkspacePage />} />
+        <Route path="/dashboard/workspace/:workspaceId/projects" element={<WorkspaceProjectsPage />} />
         <Route path="/dashboard/chat" element={<ChatGroupPage />} />
         <Route path="/dashboard/tasks" element={<TasksPage />} />
         <Route path="/dashboard/projects" element={<ProjectsPage />} />
