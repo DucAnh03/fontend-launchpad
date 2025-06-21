@@ -17,21 +17,28 @@ import SignUpPage from "@/components/pages/Auth/SignUpPage/SignUp";
 import OAuthCallback from "@/components/pages/Auth/Oauth-callback/oauth-callback";
 import VerifySignUp from "@/components/pages/Auth/VerificationPage/VerifySignUp";
 
+
+import SubscriptionPage from "@/components/pages/Payment/SubscriptionPage";
+import PaymentSuccess from "@/components/pages/Payment/PaymentSuccess";
+import PaymentFailed from "@/components/pages/Payment/PaymentFailed";
+
 // pages – main
 import RecruitmentPage from "@/components/pages/RecruitmentPage/Recruitment";
-import CreateRecruitment from "@/components/pages/RecruitmentPage/CreateRecruitment";
-import RecruitmentDetail from "@/components/pages/RecruitmentPage/RecruitmentDetail";
+import CreateRecruitment from "@/components/pages/Profile/Recruitment/CreateRecruitment";
+import RecruitmentDetail from "@/components/pages/Profile/Recruitment/RecruitmentDetail";
 import PostPage from "@/components/pages/PostPage/PostPage";
 import CommunityPage from "@/components/pages/Community/Community";
 import PortfolioPage from "@/components/pages/Portfolio/Portfolio";
 
 // pages – profile nested
 import Overview from "@/components/pages/Profile/Overview";
-import RecruitmentList from "@/components/pages/Profile/RecruitmentList";
+import RecruitmentList from "@/components/pages/Profile/Recruitment/RecruitmentList";
 import PostsList from "@/components/pages/Profile/PostsList";
 import PortfolioList from "@/components/pages/Profile/PortfolioList";
 
 // pages – dashboard
+import WorkspacePage from "@/components/pages/Dashboard/WorkspacePage";
+import WorkspaceProjectsPage from "@/components/pages/Dashboard/WorkspaceProjectsPage";
 import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage";
 import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
@@ -46,6 +53,9 @@ export default function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/oauth-callback" element={<OAuthCallback />} />
         <Route path="/verify-signup" element={<VerifySignUp />} />
+        <Route path="/subscription" element={<SubscriptionPage />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/failed" element={<PaymentFailed />} />
       </Route>
 
       {/*** Protected routes ***/}
@@ -70,6 +80,8 @@ export default function App() {
       {/*** Dashboard routes ***/}
       <Route element={<RequireAuth><DashboardLayout /></RequireAuth>}>
         <Route path="/dashboard" element={<Navigate to="/dashboard/chat" replace />} />
+        <Route path="/dashboard/workspace" element={<WorkspacePage />} />
+        <Route path="/dashboard/workspace/:workspaceId/projects" element={<WorkspaceProjectsPage />} />
         <Route path="/dashboard/chat" element={<ChatGroupPage />} />
         <Route path="/dashboard/tasks" element={<TasksPage />} />
         <Route path="/dashboard/projects" element={<ProjectsPage />} />
