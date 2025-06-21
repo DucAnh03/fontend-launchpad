@@ -7,9 +7,9 @@ export const LayoutWrapper = styled.div`
       ? "#0c0c0c"
       : `linear-gradient(
           0deg,
-          rgba(236,250,215,1) 0%,
-          rgba(255,200,200,1) 45%,
-          rgba(211,213,255,1) 100%
+          rgb(120, 165, 51) 0%,
+          rgb(117, 13, 13) 45%,
+          rgb(17, 23, 134) 100%
         )`};
 `;
 
