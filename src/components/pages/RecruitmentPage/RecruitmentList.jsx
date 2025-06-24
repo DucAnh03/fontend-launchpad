@@ -31,7 +31,8 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { listRecruitmentPosts, applyForRecruitment } from '@/services/api/recruitment/recruitment';
+import { listRecruitmentPosts } from '@/services/api/recruitment/recruitment';
+import ApplyRecruitmentModal from './ApplyRecruitmentModal';
 import './RecruitmentList.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -45,7 +46,8 @@ export default function PublicRecruitmentList() {
     const [searchText, setSearchText] = useState('');
     const [experienceFilter, setExperienceFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [applying, setApplying] = useState({});
+    const [applyModalVisible, setApplyModalVisible] = useState(false);
+    const [selectedPost, setSelectedPost] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -93,27 +95,19 @@ export default function PublicRecruitmentList() {
         setFilteredData(filtered);
     };
 
-    const handleApply = async (postId) => {
-        try {
-            setApplying(prev => ({ ...prev, [postId]: true }));
+    const handleApply = (post) => {
+        setSelectedPost(post);
+        setApplyModalVisible(true);
+    };
 
-            // Create a simple FormData for now (can be enhanced later)
-            const applicationData = new FormData();
-            applicationData.append('postId', postId);
-            applicationData.append('appliedAt', new Date().toISOString());
+    const handleApplySuccess = () => {
+        message.success('Đã gửi đơn ứng tuyển thành công!');
+        // Optionally refresh the data or update the UI
+    };
 
-            const result = await applyForRecruitment(postId, applicationData);
-
-            if (result.success) {
-                message.success('Đã gửi đơn ứng tuyển thành công!');
-            } else {
-                message.error('Có lỗi xảy ra khi gửi đơn ứng tuyển');
-            }
-        } catch (error) {
-            message.error('Không thể gửi đơn ứng tuyển. Vui lòng thử lại sau.');
-        } finally {
-            setApplying(prev => ({ ...prev, [postId]: false }));
-        }
+    const handleApplyCancel = () => {
+        setApplyModalVisible(false);
+        setSelectedPost(null);
     };
 
     const handleViewDetail = (postId) => {
@@ -379,13 +373,12 @@ export default function PublicRecruitmentList() {
                                         <Button
                                             type="primary"
                                             icon={<SendOutlined />}
-                                            onClick={() => handleApply(item._id)}
-                                            disabled={item.status === 'closed' || applying[item._id]}
-                                            loading={applying[item._id]}
+                                            onClick={() => handleApply(item)}
+                                            disabled={item.status === 'closed'}
                                             className="flex flex-col items-center gap-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-none text-white py-2 px-6 rounded-full shadow-md transition-all duration-200"
                                         >
                                             <span className="text-xs font-medium">
-                                                {applying[item._id] ? 'Đang gửi...' : 'Ứng tuyển'}
+                                                Ứng tuyển
                                             </span>
                                         </Button>
                                     </div>
@@ -394,6 +387,15 @@ export default function PublicRecruitmentList() {
                         ))}
                     </div>
                 )}
+
+                {/* Apply Recruitment Modal */}
+                <ApplyRecruitmentModal
+                    visible={applyModalVisible}
+                    onCancel={handleApplyCancel}
+                    onSuccess={handleApplySuccess}
+                    postId={selectedPost?._id}
+                    postTitle={selectedPost?.title}
+                />
             </div>
         </div>
     );

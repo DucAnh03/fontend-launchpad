@@ -1,0 +1,149 @@
+/* Apply Recruitment Modal Styles */
+.apply-recruitment-modal .ant-modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.apply-recruitment-modal .ant-modal-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.apply-recruitment-modal .ant-modal-body {
+    padding: 0;
+}
+
+.apply-form .ant-form-item-label>label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.apply-form .ant-input,
+.apply-form .ant-input-affix-wrapper {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.apply-form .ant-input:focus,
+.apply-form .ant-input-affix-wrapper:focus,
+.apply-form .ant-input-focused,
+.apply-form .ant-input-affix-wrapper-focused {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.apply-form .ant-input:hover,
+.apply-form .ant-input-affix-wrapper:hover {
+    border-color: #9ca3af;
+}
+
+.apply-form .ant-btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.apply-form .ant-btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+}
+
+.apply-form .ant-btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.3);
+}
+
+.apply-form .ant-btn-default {
+    border: 1px solid #d1d5db;
+    color: #6b7280;
+}
+
+.apply-form .ant-btn-default:hover {
+    border-color: #9ca3af;
+    color: #374151;
+    background-color: #f9fafb;
+}
+
+/* Loading state styles */
+.apply-form .ant-btn-loading {
+    pointer-events: none;
+}
+
+/* Form validation styles */
+.apply-form .ant-form-item-has-error .ant-input,
+.apply-form .ant-form-item-has-error .ant-input-affix-wrapper {
+    border-color: #ef4444;
+}
+
+.apply-form .ant-form-item-has-error .ant-input:focus,
+.apply-form .ant-form-item-has-error .ant-input-affix-wrapper:focus {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .apply-recruitment-modal .ant-modal {
+        margin: 16px;
+        max-width: calc(100vw - 32px);
+    }
+
+    .apply-recruitment-modal .ant-modal-content {
+        border-radius: 12px;
+    }
+
+    .apply-form .ant-form-item {
+        margin-bottom: 16px;
+    }
+
+    .apply-form .ant-btn {
+        height: 44px;
+        font-size: 14px;
+    }
+}
+
+/* Animation for modal appearance */
+.apply-recruitment-modal .ant-modal {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Custom scrollbar for textarea */
+.apply-form .ant-input {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.apply-form .ant-input::-webkit-scrollbar {
+    width: 6px;
+}
+
+.apply-form .ant-input::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.apply-form .ant-input::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.apply-form .ant-input::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

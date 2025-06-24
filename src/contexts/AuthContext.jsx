@@ -82,7 +82,9 @@ export function AuthProvider({ children }) {
   };
 
   const loginWithGoogle = () => {
-    window.location.href = `${api.defaults.baseURL}/auth/google`;
+    const base = `${api.defaults.baseURL}/auth/google`;
+    const url = `${base}?prompt=select_account`;
+    window.location.href = url;
   };
   const loginWithGithub = () => {
     window.location.href = `${api.defaults.baseURL}/auth/github`;

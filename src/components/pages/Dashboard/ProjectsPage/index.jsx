@@ -179,22 +179,23 @@ export default function ProjectsPage() {
                   >
                     Sửa
                   </Button>
-                  <Popconfirm
-                    title="Bạn chắc chắn muốn xóa project này?"
-                    onConfirm={() => handleDelete(project._id)}
-                    okText="Xóa"
-                    cancelText="Hủy"
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    size="small"
+                    className="rounded-lg"
+                    onClick={() => {
+                      Modal.confirm({
+                        title: "Bạn chắc chắn muốn xóa project này?",
+                        onOk: () => handleDelete(project._id),
+                        okText: "Xóa",
+                        cancelText: "Hủy",
+                      });
+                    }}
                   >
-                    <Button
-                      type="primary"
-                      danger
-                      icon={<DeleteOutlined />}
-                      size="small"
-                      className="rounded-lg"
-                    >
-                      Xóa
-                    </Button>
-                  </Popconfirm>
+                    Xóa
+                  </Button>
                 </div>
               )}
             </div>

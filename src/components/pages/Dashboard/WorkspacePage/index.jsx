@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "@/services/api/axios";
-import { Card, Button, Input, Modal, Form, message, Popconfirm, Tooltip, Tag, Radio, Switch } from "antd";
+import { Card, Button, Input, Modal, Form, message, Popconfirm, Tooltip, Tag, Radio, Switch, InputNumber } from "antd";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { EditOutlined, DeleteOutlined, UserOutlined, TeamOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +19,11 @@ export default function WorkspacePage() {
   const [editingWorkspace, setEditingWorkspace] = useState(null);
   const [editForm] = Form.useForm();
   const [editLoading, setEditLoading] = useState(false);
+
+  // State cho create modal
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createForm] = Form.useForm();
+  const [createLoading, setCreateLoading] = useState(false);
 
   useEffect(() => {
     fetchWorkspaces();
@@ -63,9 +68,10 @@ export default function WorkspacePage() {
   const handleDelete = async (workspaceId) => {
     try {
       await api.delete(`/workspaces/${workspaceId}`);
-      message.success("Đã xóa workspace thành công!");
+      console.log('Xóa workspace thành công:', workspaceId);
       fetchWorkspaces();
     } catch (err) {
+      console.error('Lỗi xóa workspace:', err);
       message.error(err?.response?.data?.message || "Xóa workspace thất bại!");
     }
   };
@@ -98,6 +104,22 @@ export default function WorkspacePage() {
     }
   };
 
+  // Xử lý tạo workspace mới
+  const handleCreateWorkspace = async (values) => {
+    setCreateLoading(true);
+    try {
+      await api.post("/workspaces", values);
+      message.success("Tạo workspace thành công!");
+      setCreateModalOpen(false);
+      createForm.resetFields();
+      fetchWorkspaces();
+    } catch (err) {
+      message.error(err?.response?.data?.message || "Tạo workspace thất bại!");
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
   if (loading) return <div className="text-center p-20">Đang tải...</div>;
   if (error) return <div className="text-center p-20 text-red-600">{error}</div>;
 
@@ -109,13 +131,18 @@ export default function WorkspacePage() {
         headStyle={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '2px solid #f0f0f0', background: "#f5faff" }}
         bodyStyle={{ background: "#fafdff" }}
         extra={
-          <Input.Search
-            allowClear
-            placeholder="Tìm kiếm workspace theo tên hoặc thành viên..."
-            onSearch={handleSearch}
-            loading={searching}
-            style={{ width: 320 }}
-          />
+          <div className="flex items-center gap-2">
+            <Button type="primary" onClick={() => setCreateModalOpen(true)}>
+              + Tạo workspace
+            </Button>
+            <Input.Search
+              allowClear
+              placeholder="Tìm kiếm workspace theo tên hoặc thành viên..."
+              onSearch={handleSearch}
+              loading={searching}
+              style={{ width: 320 }}
+            />
+          </div>
         }
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -152,32 +179,37 @@ export default function WorkspacePage() {
                 </div>
               </div>
               {isLeader(ws) && (
-                <div className="flex gap-2 mt-4 justify-end" onClick={e => e.stopPropagation()}>
+                <div className="flex gap-2 mt-4 justify-end">
                   <Button
                     type="primary"
                     icon={<EditOutlined />}
                     size="small"
                     className="rounded-lg"
-                    onClick={() => openEditModal(ws)}
+                    onClick={e => {
+                      e.stopPropagation();
+                      openEditModal(ws);
+                    }}
                   >
                     Sửa
                   </Button>
-                  <Popconfirm
-                    title="Bạn chắc chắn muốn xóa workspace này?"
-                    onConfirm={() => handleDelete(ws._id)}
-                    okText="Xóa"
-                    cancelText="Hủy"
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    size="small"
+                    className="rounded-lg"
+                    onClick={e => {
+                      e.stopPropagation();
+                      Modal.confirm({
+                        title: "Bạn chắc chắn muốn xóa workspace này?",
+                        onOk: () => handleDelete(ws._id),
+                        okText: "Xóa",
+                        cancelText: "Hủy",
+                      });
+                    }}
                   >
-                    <Button
-                      type="primary"
-                      danger
-                      icon={<DeleteOutlined />}
-                      size="small"
-                      className="rounded-lg"
-                    >
-                      Xóa
-                    </Button>
-                  </Popconfirm>
+                    Xóa
+                  </Button>
                 </div>
               )}
             </div>
@@ -216,7 +248,7 @@ export default function WorkspacePage() {
             name="maxMembers"
             label="Số thành viên tối đa"
           >
-            <Input type="number" min={1} max={100} className="rounded-lg" />
+            <InputNumber min={1} max={100} className="rounded-lg w-full" />
           </Form.Item>
           <Form.Item
             name="isPublic"
@@ -248,6 +280,81 @@ export default function WorkspacePage() {
               className="w-full rounded-lg"
             >
               Lưu thay đổi
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Create Workspace Modal */}
+      <Modal
+        title={<span className="text-lg font-bold">Tạo Workspace mới</span>}
+        open={createModalOpen}
+        onCancel={() => setCreateModalOpen(false)}
+        footer={null}
+        destroyOnClose
+        className="rounded-xl"
+      >
+        <Form
+          form={createForm}
+          layout="vertical"
+          onFinish={handleCreateWorkspace}
+        >
+          <Form.Item
+            name="name"
+            label="Tên workspace"
+            rules={[{ required: true, message: "Vui lòng nhập tên workspace!" }]}
+          >
+            <Input className="rounded-lg" />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Mô tả"
+          >
+            <Input.TextArea rows={3} className="rounded-lg" />
+          </Form.Item>
+          <Form.Item
+            name="maxMembers"
+            label="Số thành viên tối đa"
+            rules={[
+              { required: true, message: "Vui lòng nhập số thành viên tối đa!" },
+              { type: 'number', min: 1, max: 100, message: "Số thành viên tối đa phải từ 1 đến 100" }
+            ]}
+          >
+            <InputNumber
+              min={1}
+              max={100}
+              className="rounded-lg w-full"
+              placeholder="Nhập số từ 1 đến 100"
+              parser={value => Math.max(1, Math.min(Number(value), 100))}
+            />
+          </Form.Item>
+          <Form.Item
+            name="isPublic"
+            label="Chế độ workspace"
+            initialValue={true}
+            rules={[{ required: true, message: "Vui lòng chọn chế độ workspace!" }]}
+          >
+            <Radio.Group>
+              <Radio value={true}>Công khai</Radio>
+              <Radio value={false}>Riêng tư</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            name="allowInvite"
+            label="Cho phép mời thành viên"
+            valuePropName="checked"
+            initialValue={true}
+          >
+            <Switch checkedChildren="Có" unCheckedChildren="Không" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={createLoading}
+              className="w-full rounded-lg"
+            >
+              Tạo workspace
             </Button>
           </Form.Item>
         </Form>

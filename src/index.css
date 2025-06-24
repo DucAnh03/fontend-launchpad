@@ -9,11 +9,34 @@
     opacity: 0;
   }
 }
+
 .ripple {
   position: absolute;
   border-radius: 50%;
-  background-color: rgba(255,255,255,0.7);
+  background-color: rgba(255, 255, 255, 0.7);
   transform: scale(0);
   animation: ripple 0.6s linear;
   pointer-events: none;
+}
+
+/* Ensure Ant Design dropdowns display correctly */
+.ant-select-dropdown {
+  z-index: 9999 !important;
+}
+
+.ant-picker-dropdown {
+  z-index: 9999 !important;
+}
+
+.ant-dropdown {
+  z-index: 9999 !important;
+}
+
+.ant-popover {
+  z-index: 9999 !important;
+}
+
+/* Fix for any overflow issues */
+body {
+  overflow-x: hidden;
 }

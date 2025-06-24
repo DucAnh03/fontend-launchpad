@@ -35,6 +35,11 @@ export default function WorkspaceProjectsPage() {
   const [editForm] = Form.useForm();
   const [editLoading, setEditLoading] = useState(false);
 
+  // State cho create modal
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createForm] = Form.useForm();
+  const [createLoading, setCreateLoading] = useState(false);
+
   useEffect(() => {
     fetchProjects();
     // eslint-disable-next-line
@@ -95,6 +100,22 @@ export default function WorkspaceProjectsPage() {
     }
   };
 
+  // Xử lý tạo project mới
+  const handleCreateProject = async (values) => {
+    setCreateLoading(true);
+    try {
+      await api.post(`/workspaces/${workspaceId}/projects`, values);
+      message.success("Tạo project thành công!");
+      setCreateModalOpen(false);
+      createForm.resetFields();
+      fetchProjects();
+    } catch (err) {
+      message.error(err?.response?.data?.message || "Tạo project thất bại!");
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
   if (loading) return <div className="text-center p-20">Đang tải...</div>;
   if (error) return <div className="text-center p-20 text-red-600">{error}</div>;
 
@@ -102,7 +123,14 @@ export default function WorkspaceProjectsPage() {
     <div className="p-4 bg-gray-50 min-h-screen">
       <Button onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>← Quay lại Workspace</Button>
       <Card
-        title={<span className="text-2xl font-bold text-blue-700">Project trong workspace</span>}
+        title={
+          <div className="flex items-center gap-2">
+            <Button type="primary" onClick={() => setCreateModalOpen(true)}>
+              + Tạo project
+            </Button>
+            <span className="text-2xl font-bold text-blue-700">Project trong workspace</span>
+          </div>
+        }
         className="shadow-2xl rounded-2xl max-w-screen-xl mx-auto"
         headStyle={{ fontSize: '1.25rem', fontWeight: 'bold', borderBottom: '2px solid #f0f0f0', background: "#f5faff" }}
         bodyStyle={{ background: "#fafdff" }}
@@ -152,22 +180,23 @@ export default function WorkspaceProjectsPage() {
                   >
                     Sửa
                   </Button>
-                  <Popconfirm
-                    title="Bạn chắc chắn muốn xóa project này?"
-                    onConfirm={() => handleDelete(project._id)}
-                    okText="Xóa"
-                    cancelText="Hủy"
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    size="small"
+                    className="rounded-lg"
+                    onClick={() => {
+                      Modal.confirm({
+                        title: "Bạn chắc chắn muốn xóa project này?",
+                        onOk: () => handleDelete(project._id),
+                        okText: "Xóa",
+                        cancelText: "Hủy",
+                      });
+                    }}
                   >
-                    <Button
-                      type="primary"
-                      danger
-                      icon={<DeleteOutlined />}
-                      size="small"
-                      className="rounded-lg"
-                    >
-                      Xóa
-                    </Button>
-                  </Popconfirm>
+                    Xóa
+                  </Button>
                 </div>
               )}
             </div>
@@ -230,6 +259,67 @@ export default function WorkspaceProjectsPage() {
               className="w-full rounded-lg"
             >
               Lưu thay đổi
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Create Project Modal */}
+      <Modal
+        title={<span className="text-lg font-bold">Tạo Project mới</span>}
+        open={createModalOpen}
+        onCancel={() => setCreateModalOpen(false)}
+        footer={null}
+        destroyOnClose
+        className="rounded-xl"
+      >
+        <Form
+          form={createForm}
+          layout="vertical"
+          onFinish={handleCreateProject}
+        >
+          <Form.Item
+            name="name"
+            label="Tên project"
+            rules={[{ required: true, message: "Vui lòng nhập tên project!" }]}
+          >
+            <Input className="rounded-lg" />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Mô tả"
+          >
+            <Input.TextArea rows={3} className="rounded-lg" />
+          </Form.Item>
+          <Form.Item
+            name="status"
+            label="Trạng thái"
+            rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
+            initialValue="planning"
+          >
+            <Select className="rounded-lg">
+              <Option value="planning">
+                <HourglassOutlined /> Lên kế hoạch
+              </Option>
+              <Option value="active">
+                <CheckCircleOutlined /> Đang thực hiện
+              </Option>
+              <Option value="completed">
+                <CheckCircleOutlined /> Hoàn thành
+              </Option>
+              <Option value="archived">
+                <StopOutlined /> Lưu trữ
+              </Option>
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={createLoading}
+              className="w-full rounded-lg"
+            >
+              Tạo project
             </Button>
           </Form.Item>
         </Form>
