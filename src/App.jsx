@@ -44,6 +44,8 @@ import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
 import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
 
+import TempSelect from "./TempSelect";
+
 export default function App() {
   return (
     <Routes>
@@ -89,4 +91,6 @@ export default function App() {
       </Route>
     </Routes>
   );
+
+  // return <TempSelect />;
 }

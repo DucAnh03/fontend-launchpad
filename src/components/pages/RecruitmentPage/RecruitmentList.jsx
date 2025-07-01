@@ -16,7 +16,8 @@ import {
     Col,
     Input,
     Select,
-    Badge
+    Badge,
+    Carousel
 } from 'antd';
 import {
     SearchOutlined,
@@ -31,7 +32,8 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { listRecruitmentPosts, applyForRecruitment } from '@/services/api/recruitment/recruitment';
+import { listRecruitmentPosts } from '@/services/api/recruitment/recruitment';
+import ApplyRecruitmentModal from './ApplyRecruitmentModal';
 import './RecruitmentList.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -45,7 +47,8 @@ export default function PublicRecruitmentList() {
     const [searchText, setSearchText] = useState('');
     const [experienceFilter, setExperienceFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [applying, setApplying] = useState({});
+    const [applyModalVisible, setApplyModalVisible] = useState(false);
+    const [selectedPost, setSelectedPost] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -93,27 +96,19 @@ export default function PublicRecruitmentList() {
         setFilteredData(filtered);
     };
 
-    const handleApply = async (postId) => {
-        try {
-            setApplying(prev => ({ ...prev, [postId]: true }));
+    const handleApply = (post) => {
+        setSelectedPost(post);
+        setApplyModalVisible(true);
+    };
 
-            // Create a simple FormData for now (can be enhanced later)
-            const applicationData = new FormData();
-            applicationData.append('postId', postId);
-            applicationData.append('appliedAt', new Date().toISOString());
+    const handleApplySuccess = () => {
+        message.success('Đã gửi đơn ứng tuyển thành công!');
+        // Optionally refresh the data or update the UI
+    };
 
-            const result = await applyForRecruitment(postId, applicationData);
-
-            if (result.success) {
-                message.success('Đã gửi đơn ứng tuyển thành công!');
-            } else {
-                message.error('Có lỗi xảy ra khi gửi đơn ứng tuyển');
-            }
-        } catch (error) {
-            message.error('Không thể gửi đơn ứng tuyển. Vui lòng thử lại sau.');
-        } finally {
-            setApplying(prev => ({ ...prev, [postId]: false }));
-        }
+    const handleApplyCancel = () => {
+        setApplyModalVisible(false);
+        setSelectedPost(null);
     };
 
     const handleViewDetail = (postId) => {
@@ -190,31 +185,27 @@ export default function PublicRecruitmentList() {
                                 </div>
                             </Col>
                             <Col xs={12} sm={12} md={6} lg={4}>
-                                <Select
-                                    placeholder="Kinh nghiệm"
+                                <select
                                     value={experienceFilter}
-                                    onChange={setExperienceFilter}
-                                    size="large"
-                                    className="w-full filter-select-modern"
+                                    onChange={e => setExperienceFilter(e.target.value)}
+                                    className="w-full h-10 px-3 rounded border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
                                 >
-                                    <Option value="all">Tất cả</Option>
-                                    <Option value="junior">Junior</Option>
-                                    <Option value="mid">Mid-level</Option>
-                                    <Option value="senior">Senior</Option>
-                                </Select>
+                                    <option value="all">Tất cả</option>
+                                    <option value="junior">Junior</option>
+                                    <option value="mid">Mid-level</option>
+                                    <option value="senior">Senior</option>
+                                </select>
                             </Col>
                             <Col xs={12} sm={12} md={6} lg={4}>
-                                <Select
-                                    placeholder="Trạng thái"
+                                <select
                                     value={statusFilter}
-                                    onChange={setStatusFilter}
-                                    size="large"
-                                    className="w-full filter-select-modern"
+                                    onChange={e => setStatusFilter(e.target.value)}
+                                    className="w-full h-10 px-3 rounded border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
                                 >
-                                    <Option value="all">Tất cả</Option>
-                                    <Option value="open">Đang mở</Option>
-                                    <Option value="closed">Đã đóng</Option>
-                                </Select>
+                                    <option value="all">Tất cả</option>
+                                    <option value="open">Đang mở</option>
+                                    <option value="closed">Đã đóng</option>
+                                </select>
                             </Col>
                             <Col xs={24} sm={24} md={12} lg={6}>
                                 <div className="text-center p-3 bg-blue-50 rounded-xl">
@@ -346,15 +337,23 @@ export default function PublicRecruitmentList() {
 
                                     {/* Image Section - Moved below content */}
                                     {item.recruitmentLinkToImages && item.recruitmentLinkToImages.length > 0 && (
-                                        <div className="relative mb-4">
-                                            <div className="aspect-video rounded-xl overflow-hidden">
-                                                <Image
-                                                    alt={item.title}
-                                                    src={item.recruitmentLinkToImages[0]}
-                                                    className="w-full h-full object-cover"
-                                                    fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3Ik1RnG4W+FgYxN"
-                                                />
-                                            </div>
+                                        <div className="recruitment-carousel-container">
+                                            <Carousel dots draggable={false}>
+                                                {item.recruitmentLinkToImages.map((img, idx) => (
+                                                    <div key={idx} className="carousel-image-wrapper">
+                                                        <img
+                                                            alt={item.title}
+                                                            src={img}
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '300px',
+                                                                objectFit: 'cover',
+                                                                borderRadius: '16px'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </Carousel>
                                             {item.status === 'closed' && (
                                                 <div className="absolute top-4 right-4">
                                                     <Tag color="red" className="closed-tag-modern">
@@ -366,27 +365,24 @@ export default function PublicRecruitmentList() {
                                     )}
 
                                     {/* Action Buttons */}
-                                    <div className="flex items-center justify-center gap-4 pt-4 border-t border-gray-100">
+                                    <div className="action-section-modern">
                                         <Button
                                             type="text"
                                             icon={<EyeOutlined />}
                                             onClick={() => handleViewDetail(item._id)}
-                                            className="flex flex-col items-center gap-1 text-gray-600 hover:text-blue-500 transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-blue-50"
+                                            className="action-button-modern"
                                         >
-                                            <span className="text-xs font-medium">Xem chi tiết</span>
+                                            Xem chi tiết
                                         </Button>
 
                                         <Button
                                             type="primary"
                                             icon={<SendOutlined />}
-                                            onClick={() => handleApply(item._id)}
-                                            disabled={item.status === 'closed' || applying[item._id]}
-                                            loading={applying[item._id]}
-                                            className="flex flex-col items-center gap-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-none text-white py-2 px-6 rounded-full shadow-md transition-all duration-200"
+                                            onClick={() => handleApply(item)}
+                                            disabled={item.status === 'closed'}
+                                            className="apply-button-modern"
                                         >
-                                            <span className="text-xs font-medium">
-                                                {applying[item._id] ? 'Đang gửi...' : 'Ứng tuyển'}
-                                            </span>
+                                            Ứng tuyển
                                         </Button>
                                     </div>
                                 </div>
@@ -394,6 +390,15 @@ export default function PublicRecruitmentList() {
                         ))}
                     </div>
                 )}
+
+                {/* Apply Recruitment Modal */}
+                <ApplyRecruitmentModal
+                    visible={applyModalVisible}
+                    onCancel={handleApplyCancel}
+                    onSuccess={handleApplySuccess}
+                    postId={selectedPost?._id}
+                    postTitle={selectedPost?.title}
+                />
             </div>
         </div>
     );

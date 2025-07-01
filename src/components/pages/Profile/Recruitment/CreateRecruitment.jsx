@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { createRecruitment } from '@/services/api/recruitment/recruitment';
 import { getMyProjects } from '@/services/api/project';
-import { Form, Input, Select, DatePicker, Upload, Button, message, Card, Divider } from 'antd';
-import { UploadOutlined, PlusOutlined, RocketOutlined } from '@ant-design/icons';
+import { Form, Input, DatePicker, Upload, Button, message, Card, Divider } from 'antd';
+import { UploadOutlined, PlusOutlined, RocketOutlined, DownOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 export default function CreateRecruitment() {
     const { user } = useAuthContext();
@@ -14,6 +13,11 @@ export default function CreateRecruitment() {
     const [loading, setLoading] = useState(false);
     const [fileList, setFileList] = useState([]);
     const [projects, setProjects] = useState([]);
+
+    // Dropdown states
+    const [expOpen, setExpOpen] = useState(false);
+    const [projectOpen, setProjectOpen] = useState(false);
+    const [skills, setSkills] = useState([]);
 
     // Check if user is a leader
     if (!user || user.role !== 'leader') {
@@ -54,29 +58,60 @@ export default function CreateRecruitment() {
             const fd = new FormData();
 
             // Các trường cơ bản
-            ['title', 'description', 'workspaceId', 'experienceLevel'].forEach(k =>
+            ['title', 'description'].forEach(k =>
                 fd.append(k, values[k])
             );
+
+            // Ensure experienceLevel is in correct format
+            if (values.experienceLevel) {
+                const levelMap = {
+                    'Junior': 'junior',
+                    'Mid-level': 'mid',
+                    'Senior': 'senior',
+                    'junior': 'junior',
+                    'mid': 'mid',
+                    'senior': 'senior'
+                };
+                fd.append('experienceLevel', levelMap[values.experienceLevel] || 'junior');
+            }
+
             if (values.projectId) fd.append('projectId', values.projectId);
 
-            // convert Dayjs → ISO
-            if (values.deadline) fd.append('deadline', values.deadline.toDate().toISOString());
+            // Add leaderId from user context
+            fd.append('leaderId', user._id);
 
-            // skills
-            values.requiredSkills.forEach(skill =>
+            // convert Dayjs → ISO
+            if (values.deadline) fd.append('deadline', new Date(values.deadline).toISOString());
+
+            // skills - use local state instead of form values
+            skills.forEach(skill =>
                 fd.append('requiredSkills[]', skill)
             );
 
             // images
             fileList.forEach(f => fd.append('images', f.originFileObj));
 
+            // Debug: Log form data
+            console.log('Form values:', values);
+            console.log('Experience Level:', values.experienceLevel);
+            console.log('Skills:', skills);
+            console.log('FileList:', fileList);
+            console.log('User ID:', user._id);
+
+            // Log FormData contents
+            for (let [key, value] of fd.entries()) {
+                console.log(`${key}:`, value);
+            }
+
             await createRecruitment(fd);
             message.success('Tạo bài đăng thành công');
             form.resetFields();
             setFileList([]);
+            setSkills([]); // Reset skills state
         } catch (err) {
             message.error(err.response?.data?.message || 'Lỗi tạo bài đăng');
-            console.error(err);
+            console.error('Full error:', err);
+            console.error('Error response:', err.response?.data);
         } finally {
             setLoading(false);
         }
@@ -142,30 +177,47 @@ export default function CreateRecruitment() {
                                 }
                                 rules={[{ required: true, message: 'Vui lòng chọn cấp độ' }]}
                             >
-                                <Select
-                                    placeholder="Chọn cấp độ"
-                                    className="rounded-lg"
-                                    dropdownStyle={{ borderRadius: '8px' }}
-                                >
-                                    <Option value="junior">
-                                        <span className="flex items-center">
-                                            <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-                                            Junior
+                                <div className="relative">
+                                    <div
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 focus:border-purple-500 transition-all duration-300 flex items-center justify-between"
+                                        onClick={() => setExpOpen(!expOpen)}
+                                    >
+                                        <span className="text-gray-600">
+                                            {(() => {
+                                                const value = form.getFieldValue('experienceLevel');
+                                                if (!value) return 'Chọn cấp độ';
+                                                const levelMap = {
+                                                    'junior': 'Junior',
+                                                    'mid': 'Mid-level',
+                                                    'senior': 'Senior'
+                                                };
+                                                return levelMap[value] || 'Chọn cấp độ';
+                                            })()}
                                         </span>
-                                    </Option>
-                                    <Option value="mid">
-                                        <span className="flex items-center">
-                                            <span className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
-                                            Mid-level
-                                        </span>
-                                    </Option>
-                                    <Option value="senior">
-                                        <span className="flex items-center">
-                                            <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
-                                            Senior
-                                        </span>
-                                    </Option>
-                                </Select>
+                                        <DownOutlined className={`text-gray-400 transition-transform duration-300 ${expOpen ? 'rotate-180' : ''}`} />
+                                    </div>
+
+                                    {expOpen && (
+                                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-lg z-50">
+                                            {[
+                                                { value: 'junior', label: 'Junior' },
+                                                { value: 'mid', label: 'Mid-level' },
+                                                { value: 'senior', label: 'Senior' }
+                                            ].map((level) => (
+                                                <div
+                                                    key={level.value}
+                                                    className="px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                                                    onClick={() => {
+                                                        form.setFieldsValue({ experienceLevel: level.value });
+                                                        setExpOpen(false);
+                                                    }}
+                                                >
+                                                    {level.label}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </Form.Item>
                         </div>
 
@@ -200,13 +252,37 @@ export default function CreateRecruitment() {
                                     </span>
                                 }
                             >
-                                <Select
-                                    placeholder="Chọn project cần tuyển"
-                                    options={projects.map(p => ({ value: p._id, label: p.name }))}
-                                    allowClear
-                                    className="rounded-lg"
-                                    dropdownStyle={{ borderRadius: '8px' }}
-                                />
+                                <div className="relative">
+                                    <div
+                                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-300 focus:border-indigo-500 transition-all duration-300 flex items-center justify-between"
+                                        onClick={() => setProjectOpen(!projectOpen)}
+                                    >
+                                        <span className="text-gray-600">
+                                            {form.getFieldValue('projectId') ?
+                                                projects.find(p => p._id === form.getFieldValue('projectId'))?.name :
+                                                'Chọn project cần tuyển'
+                                            }
+                                        </span>
+                                        <DownOutlined className={`text-gray-400 transition-transform duration-300 ${projectOpen ? 'rotate-180' : ''}`} />
+                                    </div>
+
+                                    {projectOpen && (
+                                        <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
+                                            {projects.map((project) => (
+                                                <div
+                                                    key={project._id}
+                                                    className="px-4 py-3 hover:bg-gray-50 cursor-pointer"
+                                                    onClick={() => {
+                                                        form.setFieldsValue({ projectId: project._id });
+                                                        setProjectOpen(false);
+                                                    }}
+                                                >
+                                                    {project.name}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </Form.Item>
 
                             <Form.Item
@@ -218,10 +294,10 @@ export default function CreateRecruitment() {
                                     </span>
                                 }
                             >
-                                <DatePicker
-                                    showTime
-                                    format="YYYY-MM-DD HH:mm"
+                                <Input
+                                    type="datetime-local"
                                     className="w-full rounded-lg border-2 border-gray-200 hover:border-orange-300 focus:border-orange-500 transition-all duration-300"
+                                    placeholder="Chọn hạn chót"
                                 />
                             </Form.Item>
                         </div>
@@ -236,43 +312,39 @@ export default function CreateRecruitment() {
                             }
                             rules={[{ required: true, message: 'Vui lòng chọn ít nhất một kỹ năng' }]}
                         >
-                            <Select
-                                mode="tags"
-                                placeholder="Nhập kỹ năng và nhấn Enter"
-                                className="rounded-lg"
-                                dropdownStyle={{ borderRadius: '8px' }}
-                            >
-                                <Option value="javascript">
-                                    <span className="flex items-center">
-                                        <span className="w-3 h-3 bg-yellow-400 rounded mr-2"></span>
-                                        JavaScript
-                                    </span>
-                                </Option>
-                                <Option value="react">
-                                    <span className="flex items-center">
-                                        <span className="w-3 h-3 bg-blue-400 rounded mr-2"></span>
-                                        React
-                                    </span>
-                                </Option>
-                                <Option value="nodejs">
-                                    <span className="flex items-center">
-                                        <span className="w-3 h-3 bg-green-400 rounded mr-2"></span>
-                                        Node.js
-                                    </span>
-                                </Option>
-                                <Option value="python">
-                                    <span className="flex items-center">
-                                        <span className="w-3 h-3 bg-blue-600 rounded mr-2"></span>
-                                        Python
-                                    </span>
-                                </Option>
-                                <Option value="java">
-                                    <span className="flex items-center">
-                                        <span className="w-3 h-3 bg-red-600 rounded mr-2"></span>
-                                        Java
-                                    </span>
-                                </Option>
-                            </Select>
+                            <div className="space-y-2">
+                                <div className="flex flex-wrap gap-2">
+                                    {skills.map((skill, index) => (
+                                        <span key={index} className="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm flex items-center gap-2">
+                                            {skill}
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const newSkills = skills.filter((_, i) => i !== index);
+                                                    setSkills(newSkills);
+                                                    form.setFieldsValue({ requiredSkills: newSkills });
+                                                }}
+                                                className="text-teal-600 hover:text-teal-800"
+                                            >
+                                                ×
+                                            </button>
+                                        </span>
+                                    ))}
+                                </div>
+                                <Input
+                                    placeholder="Nhập kỹ năng và nhấn Enter"
+                                    onPressEnter={(e) => {
+                                        const value = e.target.value.trim();
+                                        if (value && !skills.includes(value)) {
+                                            const newSkills = [...skills, value];
+                                            setSkills(newSkills);
+                                            form.setFieldsValue({ requiredSkills: newSkills });
+                                            e.target.value = '';
+                                        }
+                                    }}
+                                    className="rounded-lg border-2 border-gray-200 hover:border-teal-300 focus:border-teal-500 transition-all duration-300"
+                                />
+                            </div>
                         </Form.Item>
 
                         <Form.Item
