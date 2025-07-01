@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { PlusOutlined, CalendarOutlined, EditOutlined, EyeOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import './RecruitmentList.css';
+import PostApplications from '../../RecruitmentPage/PostApplications';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -15,6 +16,8 @@ export default function RecruitmentList() {
     const [selectedPost, setSelectedPost] = useState(null);
     const [newDeadline, setNewDeadline] = useState(null);
     const [updating, setUpdating] = useState(false);
+    const [showApplicationsModal, setShowApplicationsModal] = useState(false);
+    const [selectedPostId, setSelectedPostId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -153,7 +156,10 @@ export default function RecruitmentList() {
                                     <Button
                                         type="text"
                                         icon={<EyeOutlined />}
-                                        onClick={() => navigate(`/recruitment/${item._id}`)}
+                                        onClick={() => {
+                                            setSelectedPostId(item._id);
+                                            setShowApplicationsModal(true);
+                                        }}
                                     >
                                         Xem chi tiết
                                     </Button>,
@@ -298,6 +304,21 @@ export default function RecruitmentList() {
                         </div>
                     </div>
                 )}
+            </Modal>
+
+            {/* Applications Modal */}
+            <Modal
+                open={showApplicationsModal}
+                onCancel={() => {
+                    setShowApplicationsModal(false);
+                    setSelectedPostId(null);
+                }}
+                footer={null}
+                width={900}
+                title="Danh sách ứng viên ứng tuyển"
+                destroyOnClose
+            >
+                {selectedPostId && <PostApplications postId={selectedPostId} />}
             </Modal>
         </div>
     );

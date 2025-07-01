@@ -1,8 +1,13 @@
+/* src/index.css */
+
+/* 1) Import reset của AntD V5 trước tiên */
+@import "antd/dist/reset.css";
+
+/* 2) Tailwind Preflight + components */
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
 
-/* ripple keyframes */
+/* 3) Các style custom của bạn */
 @keyframes ripple {
   to {
     transform: scale(2.5);
@@ -19,24 +24,22 @@
   pointer-events: none;
 }
 
-/* Ensure Ant Design dropdowns display correctly */
-.ant-select-dropdown {
-  z-index: 9999 !important;
+body,
+#root {
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 0 !important;
 }
 
-.ant-picker-dropdown {
-  z-index: 9999 !important;
-}
-
-.ant-dropdown {
-  z-index: 9999 !important;
-}
 
 .ant-popover {
   z-index: 9999 !important;
 }
 
-/* Fix for any overflow issues */
+/* Fix overflow */
 body {
   overflow-x: hidden;
 }
+
+/* 4) Cuối cùng Tailwind utilities */
+@tailwind utilities;

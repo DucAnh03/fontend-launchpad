@@ -7,11 +7,18 @@ import {
     message,
     Spin
 } from 'antd';
-import { SendOutlined, LoadingOutlined } from '@ant-design/icons';
+import { SendOutlined, LoadingOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import api from '@/services/api/axios';
 import './ApplyRecruitmentModal.css';
 
 const { TextArea } = Input;
+
+const proficiencyOptions = [
+    { label: 'Beginner', value: 'beginner' },
+    { label: 'Intermediate', value: 'intermediate' },
+    { label: 'Advanced', value: 'advanced' },
+    { label: 'Native', value: 'native' },
+];
 
 const ApplyRecruitmentModal = ({
     visible,
@@ -38,7 +45,11 @@ const ApplyRecruitmentModal = ({
             // Prepare request data
             const requestData = {
                 reason: values.reason,
-                ...(values.portfolioUrl && { portfolioUrl: values.portfolioUrl })
+                portfolioUrl: values.portfolioUrl,
+                portfolioUrls: values.portfolioUrls?.filter(Boolean) || [],
+                socialLinks: values.socialLinks || {},
+                resumeUrl: values.resumeUrl,
+                languages: values.languages?.filter(l => l && l.language) || [],
             };
 
             // Make API request
@@ -139,19 +150,19 @@ const ApplyRecruitmentModal = ({
                         ]}
                     >
                         <TextArea
-                            placeholder="Hãy chia sẻ lý do bạn muốn ứng tuyển vào vị trí này. Bạn có thể mô tả về kinh nghiệm, kỹ năng phù hợp, hoặc động lực của mình..."
+                            placeholder="Hãy chia sẻ lý do bạn muốn ứng tuyển vào vị trí này..."
                             rows={6}
                             className="rounded-lg border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200 resize-none"
                             disabled={loading}
                         />
                     </Form.Item>
 
-                    {/* Portfolio URL Field */}
+                    {/* Portfolio Url Field */}
                     <Form.Item
                         name="portfolioUrl"
                         label={
                             <span className="text-gray-700 font-medium">
-                                Link Portfolio (tùy chọn)
+                                Link Portfolio (cũ, tuỳ chọn)
                             </span>
                         }
                         rules={[
@@ -167,6 +178,126 @@ const ApplyRecruitmentModal = ({
                             disabled={loading}
                         />
                     </Form.Item>
+
+                    {/* Portfolio Urls Field */}
+                    <Form.List name="portfolioUrls">
+                        {(fields, { add, remove }) => (
+                            <div>
+                                <label className="text-gray-700 font-medium">Các link Portfolio khác (có thể thêm nhiều link)</label>
+                                {fields.map((field, idx) => (
+                                    <div key={field.key} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                                        <Form.Item
+                                            {...field}
+                                            name={[field.name]}
+                                            rules={[{ type: 'url', message: 'Vui lòng nhập URL hợp lệ' }]}
+                                            style={{ flex: 1, marginBottom: 0 }}
+                                        >
+                                            <Input placeholder={`Portfolio link #${idx + 1}`} disabled={loading} />
+                                        </Form.Item>
+                                        <Button
+                                            icon={<MinusCircleOutlined />}
+                                            onClick={() => remove(field.name)}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                ))}
+                                <Button
+                                    type="dashed"
+                                    onClick={() => add()}
+                                    icon={<PlusOutlined />}
+                                    style={{ width: '100%' }}
+                                    disabled={loading}
+                                >
+                                    Thêm link Portfolio
+                                </Button>
+                            </div>
+                        )}
+                    </Form.List>
+
+                    {/* Social Links Field */}
+                    <Form.Item label={<span className="text-gray-700 font-medium">Mạng xã hội (tuỳ chọn)</span>} style={{ marginBottom: 0 }}>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <Form.Item name={['socialLinks', 'linkedin']} noStyle rules={[{ type: 'url', message: 'LinkedIn không hợp lệ' }]}>
+                                <Input style={{ width: '33%' }} placeholder="LinkedIn" disabled={loading} />
+                            </Form.Item>
+                            <Form.Item name={['socialLinks', 'github']} noStyle rules={[{ type: 'url', message: 'Github không hợp lệ' }]}>
+                                <Input style={{ width: '33%' }} placeholder="Github" disabled={loading} />
+                            </Form.Item>
+                            <Form.Item name={['socialLinks', 'website']} noStyle rules={[{ type: 'url', message: 'Website không hợp lệ' }]}>
+                                <Input style={{ width: '34%' }} placeholder="Website" disabled={loading} />
+                            </Form.Item>
+                        </div>
+                    </Form.Item>
+
+                    {/* Resume Url Field */}
+                    <Form.Item
+                        name="resumeUrl"
+                        label={
+                            <span className="text-gray-700 font-medium">
+                                Link CV/Resume (tuỳ chọn)
+                            </span>
+                        }
+                        rules={[
+                            {
+                                type: 'url',
+                                message: 'Vui lòng nhập URL hợp lệ'
+                            }
+                        ]}
+                    >
+                        <Input
+                            placeholder="https://drive.google.com/your-cv"
+                            className="rounded-lg border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+                            disabled={loading}
+                        />
+                    </Form.Item>
+
+                    {/* Languages Field */}
+                    <Form.List name="languages">
+                        {(fields, { add, remove }) => (
+                            <div>
+                                <label className="text-gray-700 font-medium">Ngôn ngữ & trình độ (có thể thêm nhiều)</label>
+                                {fields.map((field, idx) => (
+                                    <div key={field.key} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                                        <Form.Item
+                                            {...field}
+                                            name={[field.name, 'language']}
+                                            rules={[{ required: true, message: 'Nhập tên ngôn ngữ' }]}
+                                            style={{ flex: 2, marginBottom: 0 }}
+                                        >
+                                            <Input placeholder={`Ngôn ngữ #${idx + 1}`} disabled={loading} />
+                                        </Form.Item>
+                                        <Form.Item
+                                            {...field}
+                                            name={[field.name, 'proficiency']}
+                                            rules={[{ required: true, message: 'Chọn trình độ' }]}
+                                            style={{ flex: 2, marginBottom: 0 }}
+                                        >
+                                            <Input as="select" list="proficiencyOptions" placeholder="Trình độ" disabled={loading} />
+                                            <datalist id="proficiencyOptions">
+                                                {proficiencyOptions.map(opt => (
+                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                ))}
+                                            </datalist>
+                                        </Form.Item>
+                                        <Button
+                                            icon={<MinusCircleOutlined />}
+                                            onClick={() => remove(field.name)}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                ))}
+                                <Button
+                                    type="dashed"
+                                    onClick={() => add()}
+                                    icon={<PlusOutlined />}
+                                    style={{ width: '100%' }}
+                                    disabled={loading}
+                                >
+                                    Thêm ngôn ngữ
+                                </Button>
+                            </div>
+                        )}
+                    </Form.List>
 
                     {/* Submit Button */}
                     <Form.Item className="mb-0">
