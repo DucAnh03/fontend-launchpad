@@ -1,0 +1,428 @@
+/* Modern Recruitment List Styles - Facebook-like Design */
+
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ripple keyframes */
+@keyframes ripple {
+    to {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+/* Ensure Ant Design dropdowns display correctly */
+.ant-select-dropdown,
+.ant-picker-dropdown,
+.ant-dropdown,
+.ant-popover {
+    z-index: 9999 !important;
+}
+
+/* Fix for any overflow issues */
+body {
+    overflow-x: hidden;
+}
+
+/* Filter Select Modern Styling */
+.filter-select-modern .ant-select-selector {
+    border-radius: 12px !important;
+    border: 2px solid #e5e7eb !important;
+    padding: 8px 12px !important;
+    transition: all 0.3s ease !important;
+    background-color: #f9fafb !important;
+}
+
+.filter-select-modern .ant-select-selector:hover,
+.filter-select-modern .ant-select-focused .ant-select-selector {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+    background-color: white !important;
+}
+
+.filter-select-modern .ant-select-selection-item {
+    font-weight: 500 !important;
+}
+
+/* Status Tags Modern */
+.status-tag-modern,
+.experience-tag-modern {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 4px 12px !important;
+    font-size: 11px !important;
+    border: none !important;
+}
+
+.closed-tag-modern {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    border: none !important;
+    background: rgba(239, 68, 68, 0.9) !important;
+    color: white !important;
+}
+
+/* Card Hover Effects */
+.recruitment-card-modern {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 16px !important;
+    overflow: hidden;
+    border: 1px solid #f3f4f6 !important;
+    background: white;
+}
+
+.recruitment-card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    border-color: #e5e7eb !important;
+}
+
+/* Image Container */
+.recruitment-image-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.recruitment-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.recruitment-card-modern:hover .recruitment-image {
+    transform: scale(1.02);
+}
+
+/* Action Buttons */
+.action-button-modern {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+}
+
+.action-button-modern:hover {
+    background: #eff6ff !important;
+    color: #3b82f6 !important;
+    transform: translateY(-1px);
+}
+
+.apply-button-modern {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
+
+.apply-button-modern:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+.apply-button-modern:disabled {
+    background: #f3f4f6 !important;
+    color: #9ca3af !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Skills Tags */
+.skill-tag-modern {
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.skill-tag-modern:hover {
+    transform: scale(1.05);
+}
+
+/* Deadline Section */
+.deadline-section-modern {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.deadline-section-modern.expired {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.deadline-section-modern.near {
+    background: #fffbeb;
+    border: 1px solid #fed7aa;
+}
+
+.deadline-section-modern.active {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+/* Loading Animation */
+.loading-container-modern {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f9fafb;
+}
+
+.loading-container-modern .ant-spin {
+    color: #3b82f6;
+}
+
+/* Empty State */
+.empty-state-modern {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.empty-state-modern .ant-empty-description {
+    color: #6b7280;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+/* Search Input Modern */
+.search-input-modern {
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    padding: 12px 16px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+}
+
+.search-input-modern:focus,
+.search-input-modern:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    background-color: white;
+}
+
+/* Results Counter */
+.results-counter-modern {
+    text-align: center;
+    padding: 12px 16px;
+    background: #eff6ff;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
+}
+
+/* Smooth Transitions */
+* {
+    transition: all 0.2s ease;
+}
+
+/* Focus States for Accessibility */
+.search-input-modern:focus,
+.filter-select-modern .ant-select-selector:focus {
+    outline: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Animation for urgent deadlines */
+@keyframes pulse-urgent {
+    0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+    }
+}
+
+.deadline-urgent {
+    animation: pulse-urgent 2s infinite;
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Card Header */
+.card-header-modern {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.avatar-modern {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* Post Content */
+.post-content-modern {
+    margin-bottom: 16px;
+}
+
+.post-title-modern {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.post-description-modern {
+    color: #4b5563;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* Skills Section */
+.skills-section-modern {
+    margin-bottom: 16px;
+}
+
+.skills-title-modern {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.skills-container-modern {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Action Section */
+.action-section-modern {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .recruitment-card-modern {
+        margin-bottom: 16px;
+    }
+
+    .recruitment-image-container {
+        height: 160px;
+    }
+
+    .action-button-modern,
+    .apply-button-modern {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 640px) {
+    .action-section-modern {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .action-button-modern,
+    .apply-button-modern {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .recruitment-card-modern {
+        margin-bottom: 12px;
+    }
+
+    .recruitment-image-container {
+        height: 140px;
+    }
+
+    .action-button-modern,
+    .apply-button-modern {
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+}
+
+/* ======== OVERRIDE ĐỂ SELECT LUÔN NHẬN CLICK ======== */
+.filter-select-modern {
+    position: relative !important;
+    z-index: 50 !important;
+    pointer-events: auto !important;
+}
+
+.filter-select-modern .ant-select-selector {
+    pointer-events: auto !important;
+    z-index: 9999 !important;
+}
