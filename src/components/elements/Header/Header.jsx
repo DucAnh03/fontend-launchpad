@@ -10,6 +10,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { useAuthContext } from "@/contexts/AuthContext";
+import MessagesDropdown from "@/components/pages/Chatpage/MessagesDropdown"; 
 import logoLight from "@/assets/logo.png";
 import logoDark from "@/assets/logoDark.png";
 
@@ -127,7 +128,7 @@ export default function Header() {
   
           {/* Rose Quartz Messages */}
           <Link 
-            to="/messages" 
+            to="/dashboard/messages" 
             title="Messages"
             className="relative p-3 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all duration-500 hover:scale-110 group no-underline border border-white/30"
           >

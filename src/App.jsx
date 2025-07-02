@@ -39,10 +39,11 @@ import PortfolioList from "@/components/pages/Profile/PortfolioList";
 // pages – dashboard
 import WorkspacePage from "@/components/pages/Dashboard/WorkspacePage";
 import WorkspaceProjectsPage from "@/components/pages/Dashboard/WorkspaceProjectsPage";
-import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage";
+import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage/ChatGroupPage";
 import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
 import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
+import ChatPage from "@/components/pages/Chatpage/ChatPage"; 
 
 export default function App() {
   return (
@@ -86,6 +87,8 @@ export default function App() {
         <Route path="/dashboard/tasks" element={<TasksPage />} />
         <Route path="/dashboard/projects" element={<ProjectsPage />} />
         <Route path="/dashboard/performance" element={<PerformancePage />} />
+        <Route path="/dashboard/messages/:userId" element={<ChatPage />} />
+        <Route path="/dashboard/messages" element={<ChatPage />} />
       </Route>
     </Routes>
   );
