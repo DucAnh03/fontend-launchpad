@@ -43,7 +43,7 @@ import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage";
 import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
 import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
-
+import ChatPage from './components/pages/Chat/ChatPage'
 import TempSelect from "./TempSelect";
 
 export default function App() {
@@ -69,7 +69,7 @@ export default function App() {
         <Route path="/posts" element={<PostPage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
-
+        <Route path="/chat/:conversationId" element={<ChatPage />} />
         {/*** nested Profile ***/}
         <Route path="/profile" element={<ProfileLayout />}>
           <Route index element={<Overview />} />
