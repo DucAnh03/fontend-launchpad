@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // layouts
 import AuthLayout from "@/components/core/layouts/AuthLayout/AuthLayout";
@@ -88,6 +88,7 @@ export default function App() {
         <Route path="/dashboard/tasks" element={<TasksPage />} />
         <Route path="/dashboard/projects" element={<ProjectsPage />} />
         <Route path="/dashboard/performance" element={<PerformancePage />} />
+        <Route path="/dashboard/projects/:projectId/tasks" element={<TasksPage />} />
       </Route>
     </Routes>
   );
