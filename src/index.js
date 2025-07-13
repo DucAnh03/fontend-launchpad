@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import App from './App';
 import { StyleProvider } from '@ant-design/cssinjs';
+import { SocketProvider } from "@/contexts/SocketContext";
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ConfigProvider
@@ -18,8 +19,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <AuthProvider>
         <StyleProvider hashPriority="high">
-      <App />
-    </StyleProvider>
+          <SocketProvider>
+            <App />
+          </SocketProvider>
+        </StyleProvider>
         </AuthProvider>
       </BrowserRouter>
     </ConfigProvider>
