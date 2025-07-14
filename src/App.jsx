@@ -12,6 +12,7 @@ import ProfileLayout from "@/components/core/layouts/ProfileLayout/ProfileLayout
 import RequireAuth from "@/components/common/RequireAuth";
 
 // pages – public
+import IntroPage from "@/pages/IntroPage";
 import SignInPage from "@/components/pages/Auth/SignInPage/SignIn";
 import SignUpPage from "@/components/pages/Auth/SignUpPage/SignUp";
 import OAuthCallback from "@/components/pages/Auth/Oauth-callback/oauth-callback";
@@ -50,6 +51,7 @@ export default function App() {
   return (
     <Routes>
       {/*** Public routes ***/}
+      <Route path="/" element={<IntroPage />} />
       <Route element={<AuthLayout />}>
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
@@ -62,7 +64,7 @@ export default function App() {
 
       {/*** Protected routes ***/}
       <Route element={<RequireAuth><MainLayout /></RequireAuth>}>
-        <Route path="/" element={<Navigate to="/recruitment" replace />} />
+        <Route path="/home" element={<Navigate to="/recruitment" replace />} />
         <Route path="/recruitment" element={<RecruitmentPage />} />
         <Route path="/recruitment/create" element={<CreateRecruitment />} />
         <Route path="/recruitment/:id" element={<RecruitmentDetail />} />
