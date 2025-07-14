@@ -1,6 +1,5 @@
 import axios from '../axios'; // Đảm bảo đường dẫn đến axios instance là đúng
 
-// Interface cho dữ liệu trả về (có thể không cần nếu chỉ post)
 export interface IPortfolioItem {
   _id: string;
   title: string;
@@ -16,24 +15,29 @@ export interface IPortfolioItem {
   // ... các trường khác
 }
 
-/**
- * Tạo một mục portfolio mới
- * @param portfolioData - Dữ liệu dạng FormData
- */
 export async function createPortfolio(portfolioData: FormData): Promise<IPortfolioItem> {
   const { data } = await axios.post('/portfolio', portfolioData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     }
   });
-  return data.data;
+  return data.data; // Backend returns { success: true, data: newPortfolioObject } for creation
 }
 
 export async function getAllPortfolios(): Promise<IPortfolioItem[]> {
-  const { data } = await axios.get('/portfolio');
-  return data.data || []; // Giả sử backend trả về { data: [...] }
+  try {
+    const { data } = await axios.get('/portfolio'); // `data` here is { success: true, count: 3, data: [...] }
+    return data.data || []; // Correctly extracts the array of portfolio items
+  } catch (error) {
+    console.error('Error fetching all portfolios:', error);
+    throw error; // Essential to propagate errors for proper frontend handling
+  }
 }
+
 export async function getPortfolioById(id: string): Promise<IPortfolioItem> {
     const { data } = await axios.get(`/portfolio/${id}`);
-    return data.metadata; 
+    // BASED ON THE BACKEND FOR getAllPortfolioItems, IT'S HIGHLY LIKELY
+    // THAT getPortfolioById ALSO RETURNS { success: true, data: singlePortfolio }
+    // So, it should probably be `data.data` here too.
+    return data.data; // <--- Changed from data.metadata (Please confirm your backend for single item)
 }
