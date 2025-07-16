@@ -1,6 +1,6 @@
 // src/App.jsx
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // layouts
 import AuthLayout from "@/components/core/layouts/AuthLayout/AuthLayout";
@@ -43,6 +43,7 @@ import ChatGroupPage from "@/components/pages/Dashboard/ChatGroupPage";
 import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
 import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
+import CalendarPage from "@/components/pages/Dashboard/CalendarPage";
 
 import TempSelect from "./TempSelect";
 
@@ -88,6 +89,8 @@ export default function App() {
         <Route path="/dashboard/tasks" element={<TasksPage />} />
         <Route path="/dashboard/projects" element={<ProjectsPage />} />
         <Route path="/dashboard/performance" element={<PerformancePage />} />
+        <Route path="/dashboard/projects/:projectId/tasks" element={<TasksPage />} />
+        <Route path="/dashboard/calendar" element={<CalendarPage />} />
       </Route>
     </Routes>
   );

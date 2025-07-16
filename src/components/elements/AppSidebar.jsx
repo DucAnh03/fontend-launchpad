@@ -6,7 +6,8 @@ import {
     ProjectOutlined,
     LineChartOutlined,
     HomeOutlined,
-    AppstoreOutlined
+    AppstoreOutlined,
+    CalendarOutlined // Thêm icon Calendar
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as S from "./SidebarBase.styles";
@@ -37,6 +38,12 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
             key: "/dashboard/projects",
             icon: <ProjectOutlined />,
             label: <Link to="/dashboard/projects">Dự án</Link>,
+        },
+        // Thêm nút Lịch ở đây
+        {
+            key: "/dashboard/calendar",
+            icon: <CalendarOutlined />,
+            label: <Link to="/dashboard/calendar">Lịch</Link>,
         },
         {
             key: "/dashboard/performance",

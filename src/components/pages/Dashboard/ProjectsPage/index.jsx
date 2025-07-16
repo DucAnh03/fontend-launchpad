@@ -3,6 +3,7 @@ import api from "@/services/api/axios";
 import { Card, Button, Modal, Form, Input, Select, message, Popconfirm, Tag, Tooltip } from "antd";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { EditOutlined, DeleteOutlined, CalendarOutlined, CheckCircleOutlined, HourglassOutlined, StopOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -27,6 +28,7 @@ export default function ProjectsPage() {
   const [search, setSearch] = useState("");
   const [error, setError] = useState(null);
   const { user } = useAuthContext();
+  const navigate = useNavigate();
 
   // State cho edit modal
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -141,7 +143,12 @@ export default function ProjectsPage() {
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xl font-bold text-blue-800">{project.name}</h3>
+                  <h3
+                    className="text-xl font-bold text-blue-800 cursor-pointer hover:underline"
+                    onClick={() => navigate(`/dashboard/projects/${project._id}/tasks`)}
+                  >
+                    {project.name}
+                  </h3>
                   <Tag color={statusColor[project.status] || "default"} className="ml-2">
                     {statusLabel[project.status] || project.status}
                   </Tag>
