@@ -46,6 +46,7 @@ import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
 import CalendarPage from "@/components/pages/Dashboard/CalendarPage";
 
 import TempSelect from "./TempSelect";
+import UserPublicProfile from "@/components/pages/Profile/UserPublicProfile";
 
 export default function App() {
   return (
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="posts" element={<PostsList />} />
           <Route path="portfolio" element={<PortfolioList />} />
         </Route>
+        <Route path="/profile/id/:userId" element={<UserPublicProfile />} />
       </Route>
 
       {/*** Dashboard routes ***/}

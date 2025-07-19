@@ -37,12 +37,12 @@ export const SocketProvider = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (user && token) {
-            const newSocket = io("http://localhost:3000", { // URL backend
+            const newSocket = io("http://localhost:3001", { // URL backend
                 extraHeaders: {
                     authorization: `Bearer ${token}`
                 },
                 cors: {
-                    origin: "http://localhost:3001", // Frontend origin
+                    origin: "http://localhost:3000", // Frontend origin
                     credentials: true
                 }
             });
@@ -91,7 +91,7 @@ export const SocketProvider = ({ children }) => {
 
             newSocket.on('connect_error', (err) => {
                 console.error('❌ Socket.IO Connection Error:', err.message);
-                message.error(`Lỗi kết nối WebSocket: ${err.message}`);
+                // message.error(`Lỗi kết nối WebSocket: ${err.message}`);
             });
 
             return () => {

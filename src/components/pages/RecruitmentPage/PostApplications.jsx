@@ -58,10 +58,10 @@ export default function PostApplications({ postId: propPostId }) {
             key: 'applicantId',
             render: (user) => (
                 <Space>
-                    <Text strong>{user?.fullName || user?.name || 'Ẩn danh'}</Text>
-                    <Button size="small" icon={<EyeOutlined />} onClick={() => navigate(`/users/${user.username}`)}>
-                        Xem profile
-                    </Button>
+                  <Text strong>{user?.fullName || user?.name || user || 'Ẩn danh'}</Text>
+                  <Button size="small" icon={<EyeOutlined />} onClick={() => navigate(`/profile/id/${typeof user === 'object' ? user._id : user}`)}>
+                      Xem profile
+                  </Button>
                 </Space>
             ),
         },
