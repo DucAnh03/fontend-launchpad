@@ -6,6 +6,7 @@ import api from "@/services/api/axios";
 import { useAuthContext } from "@/contexts/AuthContext";
 import axios from "axios";
 import { useSocket } from "@/contexts/SocketContext";
+import { useNavigate } from "react-router-dom";
 import {
   startConversation,
   getMessagesByConversationId,
@@ -24,6 +25,7 @@ export default function PostPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [chatWindows, setChatWindows] = useState([]);
+  const navigate = useNavigate();
 
   const fetchPosts = async (page = 1, isNewSearch = false) => {
     try {
@@ -218,6 +220,13 @@ export default function PostPage() {
   // Hàm đóng cửa sổ chat
   const closeChatWindow = (convId) => {
     setChatWindows((prev) => prev.filter((c) => c.conv.id !== convId));
+  };
+
+  // Hàm navigate đến profile của user
+  const navigateToUserProfile = (userId) => {
+    if (userId) {
+      navigate(`/profile/id/${userId}`);
+    }
   };
 
   return (
@@ -430,13 +439,21 @@ export default function PostPage() {
               <div key={post._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-5 transition-all duration-200 hover:shadow-md">
                 <div className="p-6">
                   <div className="flex items-start gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                    <div 
+                      className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity duration-200"
+                      onClick={() => navigateToUserProfile(post.authorId?._id)}
+                    >
                       {post.authorId?.name?.charAt(0) || 'U'}
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-semibold text-gray-900">{post.authorId?.name || 'Người dùng'}</h4>
+                          <h4 
+                            className="font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                            onClick={() => navigateToUserProfile(post.authorId?._id)}
+                          >
+                            {post.authorId?.name || 'Người dùng'}
+                          </h4>
                           <p className="text-xs text-gray-500 mt-0.5">
                             {new Date(post.createdAt).toLocaleDateString('vi-VN', {
                               day: 'numeric',
