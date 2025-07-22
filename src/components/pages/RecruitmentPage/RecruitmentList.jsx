@@ -115,6 +115,16 @@ export default function PublicRecruitmentList() {
         navigate(`/recruitment/${postId}`);
     };
 
+    // Hàm navigate đến profile của leader với safety check
+    const navigateToLeaderProfile = (leaderId) => {
+        if (leaderId && leaderId !== 'undefined') {
+            navigate(`/profile/id/${leaderId}`);
+        } else {
+            console.warn('RecruitmentList - Cannot navigate: leaderId is undefined or invalid');
+            message.warning('Không thể xem profile của leader này');
+        }
+    };
+
     const getStatusColor = (status) => {
         return status === 'open' ? 'green' : 'red';
     };
@@ -246,7 +256,8 @@ export default function PublicRecruitmentList() {
                     </div>
                 ) : (
                     <div className="space-y-5">
-                        {filteredData.map(item => (
+                        {filteredData.map(item => {
+                            return (
                             <div
                                 key={item._id}
                                 className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-md"
@@ -254,13 +265,21 @@ export default function PublicRecruitmentList() {
                                 <div className="p-6">
                                     {/* Post Header */}
                                     <div className="flex items-start gap-3 mb-4">
-                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                                        <div 
+                                            className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity duration-200"
+                                            onClick={() => navigateToLeaderProfile(item.leaderId)}
+                                        >
                                             <UserOutlined />
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex justify-between items-start">
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900">Leader</h4>
+                                                    <h4 
+                                                        className="font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                                                        onClick={() => navigateToLeaderProfile(item.leaderId)}
+                                                    >
+                                                        {item.leaderId?.name || 'Leader'}
+                                                    </h4>
                                                     <p className="text-xs text-gray-500 mt-0.5">
                                                         {dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}
                                                     </p>
@@ -387,7 +406,8 @@ export default function PublicRecruitmentList() {
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                        );
+                        })}
                     </div>
                 )}
 

@@ -3,7 +3,7 @@ import axios from "axios";
 import { constants } from "@/settings/constants";
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: 'http://localhost:5000/api',
 });
 
 api.interceptors.request.use(config => {
