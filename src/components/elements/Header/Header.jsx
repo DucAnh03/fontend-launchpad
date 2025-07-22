@@ -39,8 +39,8 @@ export default function Header() {
     const fetchConversations = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:3000/api/conversations", {
-          headers: { Authorization: `Bearer ${token}` }
+        const res = await axios.get("http://localhost:5000/api/conversations", {
+          headers: { Authorization: `Bearer ${token}` },
         });
         setConversations(res.data.data || []);
       } catch (error) {
@@ -59,17 +59,17 @@ export default function Header() {
   // Lắng nghe tin nhắn mới để cập nhật danh sách hội thoại
   useEffect(() => {
     const handleNewMessageForConversations = (newMessage) => {
-      setConversations(prevConversations => {
-        const updatedConversations = prevConversations.map(conv => {
+      setConversations((prevConversations) => {
+        const updatedConversations = prevConversations.map((conv) => {
           if (conv._id === newMessage.conversationId) {
             // Cập nhật lastMessage của cuộc trò chuyện này
             return {
               ...conv,
               lastMessage: {
                 content: newMessage.content || `[${newMessage.messageType}]`,
-                sender: newMessage.senderId // Đảm bảo senderId có đủ thông tin như { name: "..." }
+                sender: newMessage.senderId, // Đảm bảo senderId có đủ thông tin như { name: "..." }
               },
-              updatedAt: newMessage.createdAt // Cập nhật thời gian cuối cùng
+              updatedAt: newMessage.createdAt, // Cập nhật thời gian cuối cùng
             };
           }
           return conv;
@@ -79,7 +79,9 @@ export default function Header() {
         // (ví dụ: người dùng gửi tin nhắn đầu tiên cho bạn), bạn cần xem xét
         // thêm cuộc trò chuyện đó vào danh sách hoặc làm mới toàn bộ danh sách.
         // Cách đơn giản nhất là kiểm tra nếu không tìm thấy, gọi lại fetchConversations.
-        const conversationExists = updatedConversations.some(c => c._id === newMessage.conversationId);
+        const conversationExists = updatedConversations.some(
+          (c) => c._id === newMessage.conversationId
+        );
         if (!conversationExists) {
           // Tin nhắn mới từ cuộc trò chuyện chưa có trong danh sách,
           // Fetch lại toàn bộ danh sách để đảm bảo không bị thiếu.
@@ -91,7 +93,10 @@ export default function Header() {
         }
 
         // Sắp xếp lại danh sách để cuộc trò chuyện có tin nhắn mới nhất lên đầu
-        return updatedConversations.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+        return updatedConversations.sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
       });
     };
 
@@ -109,11 +114,15 @@ export default function Header() {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (messengerRef.current && !messengerRef.current.contains(event.target)) {
+      if (
+        messengerRef.current &&
+        !messengerRef.current.contains(event.target)
+      ) {
         setShowMessenger(false);
       }
     }
-    if (showMessenger) document.addEventListener("mousedown", handleClickOutside);
+    if (showMessenger)
+      document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showMessenger]);
 
@@ -126,25 +135,26 @@ export default function Header() {
 
   const profileMenuItems = [
     {
-      key: 'profile',
+      key: "profile",
       icon: <UserOutlined />,
-      label: 'Profile',
-      onClick: () => navigate("/profile")
+      label: "Profile",
+      onClick: () => navigate("/profile"),
     },
     {
-      type: 'divider'
+      type: "divider",
     },
     {
-      key: 'logout',
+      key: "logout",
       icon: <LogoutOutlined />,
-      label: 'Logout',
-      onClick: logout
-    }
+      label: "Logout",
+      onClick: logout,
+    },
   ];
 
   const themeProp = dark ? "dark" : "light";
 
-  const openChatWindow = (convData) => { // Đổi tên param để tránh nhầm lẫn
+  const openChatWindow = (convData) => {
+    // Đổi tên param để tránh nhầm lẫn
     setShowMessenger(false);
     setOpenChats((prev) => {
       const chatExists = prev.some((c) => c.id === convData.id);
@@ -178,10 +188,10 @@ export default function Header() {
               <ul className="flex gap-2 list-none m-0 p-0">
                 {routes.map(({ label, path }, index) => {
                   const gemColors = [
-                    'from-rose-400 to-pink-500',
-                    'from-purple-400 to-indigo-500',
-                    'from-blue-400 to-cyan-500',
-                    'from-yellow-400 to-orange-500'
+                    "from-rose-400 to-pink-500",
+                    "from-purple-400 to-indigo-500",
+                    "from-blue-400 to-cyan-500",
+                    "from-yellow-400 to-orange-500",
                   ];
                   const gemColor = gemColors[index % gemColors.length];
 
@@ -189,16 +199,23 @@ export default function Header() {
                     <li key={path} className="relative">
                       <Link
                         to={path}
-                        className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-all duration-500 no-underline group overflow-hidden ${pathname === path
-                          ? 'text-black bg-white/30 shadow-lg backdrop-blur-sm border border-white/40'
-                          : 'text-black/90 hover:text-black hover:bg-white/20'
-                          }`}
+                        className={`relative px-5 py-2 rounded-full text-sm font-semibold transition-all duration-500 no-underline group overflow-hidden ${
+                          pathname === path
+                            ? "text-black bg-white/30 shadow-lg backdrop-blur-sm border border-white/40"
+                            : "text-black/90 hover:text-black hover:bg-white/20"
+                        }`}
                       >
-                        <div className={`absolute inset-0 bg-gradient-to-r ${gemColor} opacity-0 group-hover:opacity-20 rounded-full transition-all duration-500`}></div>
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-r ${gemColor} opacity-0 group-hover:opacity-20 rounded-full transition-all duration-500`}
+                        ></div>
                         <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"></div>
-                        <span className="relative z-10 drop-shadow-sm">{label}</span>
+                        <span className="relative z-10 drop-shadow-sm">
+                          {label}
+                        </span>
                         {pathname === path && (
-                          <div className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gradient-to-r ${gemColor} rounded-full shadow-lg`}></div>
+                          <div
+                            className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gradient-to-r ${gemColor} rounded-full shadow-lg`}
+                          ></div>
                         )}
                       </Link>
                     </li>
@@ -211,8 +228,18 @@ export default function Header() {
           <div className="flex items-center gap-5">
             <button className="relative p-3 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all duration-500 hover:scale-110 group border border-white/30">
               <div className="absolute inset-0 bg-gradient-to-r from-rose-400/30 to-purple-500/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <svg className="relative w-5 h-5 text-black drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className="relative w-5 h-5 text-black drop-shadow-sm"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </button>
 
@@ -225,9 +252,9 @@ export default function Header() {
                 <div className="absolute inset-0 bg-gradient-to-r from-rose-400/30 to-pink-500/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <MessageOutlined className="relative text-black text-lg drop-shadow-sm" />
                 {unreadCount > 0 && ( // Chỉ hiển thị badge nếu có tin nhắn chưa đọc
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center text-xs text-black font-bold shadow-lg border border-white/50">
-                        {unreadCount}
-                    </div>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center text-xs text-black font-bold shadow-lg border border-white/50">
+                    {unreadCount}
+                  </div>
                 )}
               </button>
               {showMessenger && (
@@ -242,35 +269,63 @@ export default function Header() {
                       className="text-white hover:text-gray-200"
                       onClick={() => setShowMessenger(false)}
                     >
-                      <svg width={20} height={20} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        width={20}
+                        height={20}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
                   <div className="p-4 bg-white h-[320px] overflow-y-auto">
                     <div className="flex flex-col gap-3">
                       {conversations.map((conv) => {
-                        const other = conv.participants.find(p => p._id !== user._id);
-                        const avatarUrl = other?.avatar?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(other?.name || "Unknown")}`;
+                        const other = conv.participants.find(
+                          (p) => p._id !== user._id
+                        );
+                        const avatarUrl =
+                          other?.avatar?.url ||
+                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            other?.name || "Unknown"
+                          )}`;
                         const name = other?.name || "Unknown";
-                        const lastMsg = conv.lastMessage?.content || "Chưa có tin nhắn";
+                        const lastMsg =
+                          conv.lastMessage?.content || "Chưa có tin nhắn";
 
                         return (
                           <div
                             key={conv._id}
                             className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition"
-                            onClick={() => openChatWindow({
-                              id: conv._id,
-                              name,
-                              avatar: avatarUrl,
-                              lastMsg, // Đây là lastMsg của conversation list, không truyền vào ChatWindow
-                              participants: conv.participants,
-                            })}
+                            onClick={() =>
+                              openChatWindow({
+                                id: conv._id,
+                                name,
+                                avatar: avatarUrl,
+                                lastMsg, // Đây là lastMsg của conversation list, không truyền vào ChatWindow
+                                participants: conv.participants,
+                              })
+                            }
                           >
-                            <img src={avatarUrl} alt="avatar" className="w-10 h-10 rounded-full" />
+                            <img
+                              src={avatarUrl}
+                              alt="avatar"
+                              className="w-10 h-10 rounded-full"
+                            />
                             <div>
-                              <div className="font-medium text-gray-900">{name}</div>
-                              <div className="text-xs text-gray-500 truncate max-w-[160px]">{lastMsg}</div>
+                              <div className="font-medium text-gray-900">
+                                {name}
+                              </div>
+                              <div className="text-xs text-gray-500 truncate max-w-[160px]">
+                                {lastMsg}
+                              </div>
                             </div>
                           </div>
                         );
@@ -306,7 +361,11 @@ export default function Header() {
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-300 to-purple-300 opacity-0 group-hover:opacity-50 transition-opacity duration-500 rounded-full"></div>
                   <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
                   <span className="relative z-10 flex items-center gap-2 drop-shadow-sm">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                     Login
@@ -348,8 +407,12 @@ export default function Header() {
                           <UserOutlined className="text-white text-sm" />
                         </div>
                         <div>
-                          <span className="text-gray-800 font-semibold group-hover:text-gray-900 transition-colors">Profile</span>
-                          <p className="text-xs text-gray-500">View your profile</p>
+                          <span className="text-gray-800 font-semibold group-hover:text-gray-900 transition-colors">
+                            Profile
+                          </span>
+                          <p className="text-xs text-gray-500">
+                            View your profile
+                          </p>
                         </div>
                       </div>
                       <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mx-4"></div>
@@ -364,8 +427,12 @@ export default function Header() {
                           <LogoutOutlined className="text-white text-sm" />
                         </div>
                         <div>
-                          <span className="text-gray-800 font-semibold group-hover:text-gray-900 transition-colors">Logout</span>
-                          <p className="text-xs text-gray-500">Sign out of your account</p>
+                          <span className="text-gray-800 font-semibold group-hover:text-gray-900 transition-colors">
+                            Logout
+                          </span>
+                          <p className="text-xs text-gray-500">
+                            Sign out of your account
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -375,8 +442,18 @@ export default function Header() {
             )}
 
             <button className="lg:hidden p-3 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all duration-500 hover:scale-110 border border-white/30">
-              <svg className="w-5 h-5 text-black drop-shadow-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <svg
+                className="w-5 h-5 text-black drop-shadow-sm"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
           </div>
