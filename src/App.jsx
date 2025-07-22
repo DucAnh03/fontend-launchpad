@@ -106,7 +106,10 @@ export default function App() {
         <Route path="/dashboard/tasks" element={<TasksPage />} />
         <Route path="/dashboard/projects" element={<ProjectsPage />} />
         <Route path="/dashboard/performance" element={<PerformancePage />} />
-        <Route path="/dashboard/projects/:projectId/tasks" element={<TasksPage />} />
+        <Route
+          path="/dashboard/projects/:projectId/tasks"
+          element={<TasksPage />}
+        />
         <Route path="/dashboard/calendar" element={<CalendarPage />} />
       </Route>
     </Routes>

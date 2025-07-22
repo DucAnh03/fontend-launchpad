@@ -70,7 +70,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem("token", accessToken);
 
       setUser(u);
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       // ...
     } finally {

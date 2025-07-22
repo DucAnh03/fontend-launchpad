@@ -200,7 +200,7 @@ const Profile = () => {
                 >
                   Chỉnh sửa profile
                 </Button>
-                {!profile?.isLeader && (
+                {profile?.role !== "leader" && (
                   <>
                     <Button
                       type="primary"
