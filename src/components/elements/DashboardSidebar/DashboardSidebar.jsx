@@ -1,140 +1,188 @@
 import React from "react";
-import { Menu } from "antd";
+import { Menu, Badge, Divider } from "antd";
 import {
-    MessageOutlined,
-    CheckSquareOutlined,
-    ProjectOutlined,
-    LineChartOutlined,
-    HomeOutlined,
-    TeamOutlined, // Icon cho Nhóm Làm việc
-    FileTextOutlined, // Icon cho Bản tin
-    CalendarOutlined, // Icon cho Lịch
-    FolderOutlined, // Icon cho Tài liệu
-    CloudOutlined, // Icon cho Drive
-    MailOutlined, // Icon cho Webmail
-    ToolOutlined, // Icon cho CRM
-    ClockCircleOutlined, // Icon cho Đặt chỗ
-    ShopOutlined, // Icon cho Quản lý kho hàng
-    RocketOutlined, // Icon cho Tiếp thị
-    ShoppingCartOutlined, // Icon cho Website và cửa hàng
-    SettingOutlined, // Icon cho Cài đặt
-    BlockOutlined, // Icon cho Dự án hợp tác (dùng tạm)
+  MessageOutlined,
+  CheckSquareOutlined,
+  ProjectOutlined,
+  LineChartOutlined,
+  HomeOutlined,
+  TeamOutlined,
+  FileTextOutlined,
+  CalendarOutlined,
+  FolderOutlined,
+  CloudOutlined,
+  MailOutlined,
+  ToolOutlined,
+  ClockCircleOutlined,
+  ShopOutlined,
+  RocketOutlined,
+  ShoppingCartOutlined,
+  SettingOutlined,
+  BlockOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as S from "../SidebarBase.styles";
-import styled from "styled-components";
-import { Layout } from "antd";
-
-
-// // Dashboard ở dashboard    
-// export const StyledSider = styled(Layout.Sider)`
-//   min-height: 100vh;
-//   background: transparent !important;
-//   backdrop-filter: blur(12px);
-//   border-top-right-radius: 18px;
-//   border-bottom-right-radius: 18px;
-//   box-shadow: 2px 0 8px rgba(80, 80, 160, 0.08);
-//   padding-top: 12px;
-//   // ... các style khác
-// `;
 
 export default function DashboardSidebar({ collapsed, setCollapsed }) {
-    const { pathname } = useLocation();
-    const navigate = useNavigate();
-    const items = [
-        // Mục "Hợp tác" - SubMenu
-        {
-            key: "collaboration",
-            label: "Hợp tác",
-            icon: <TeamOutlined />, // Icon cho Hợp tác, có thể thay đổi
-            type: 'group', // Để tạo header cho nhóm
-            children: [
-                {
-                    key: "/dashboard/chat",
-                    icon: (
-                        <Badge count={1} offset={[-10, 0]}> {/* Offset để điều chỉnh vị trí badge */}
-                            <MessageOutlined />
-                        </Badge>
-                    ),
-                    label: <Link to="/dashboard/chat">Trình nhắn tin</Link>,
-                },
-                {
-                    key: "/dashboard/news", // Giả định route cho Bản tin
-                    icon: <FileTextOutlined />,
-                    label: <Link to="/dashboard/news">Bản tin</Link>,
-                },
-                {
-                    key: "/dashboard/cooperative-projects", // Giả định route cho Dự án hợp tác
-                    icon: <BlockOutlined />,
-                    label: <Link to="/dashboard/cooperative-projects">Dự án hợp tác</Link>,
-                },
-                {
-                    key: "/dashboard/calendar", // Giả định route cho Lịch
-                    icon: <CalendarOutlined />,
-                    label: <Link to="/dashboard/calendar">Lịch</Link>,
-                },
-                {
-                    key: "/dashboard/documents", // Giả định route cho Tài liệu
-                    icon: <FolderOutlined />,
-                    label: <Link to="/dashboard/documents">Tài liệu</Link>,
-                },
-                {
-                    key: "/dashboard/drive", // Giả định route cho Drive
-                    icon: <CloudOutlined />,
-                    label: <Link to="/dashboard/drive">Drive</Link>,
-                },
-                {
-                    key: "/dashboard/webmail", // Giả định route cho Webmail
-                    icon: <MailOutlined />,
-                    label: <Link to="/dashboard/webmail">Webmail</Link>,
-                },
-                {
-                    key: "/dashboard/work-groups", // Giả định route cho Nhóm làm việc
-                    icon: <TeamOutlined />,
-                    label: <Link to="/dashboard/work-groups">Nhóm Làm việc</Link>,
-                },
-            ],
-        },
-        // Mục "Tác vụ và Dự án"
-        {
-            key: "/dashboard/tasks", // Sử dụng lại route tasks cũ
-            icon: (
-                <Badge count={1} offset={[-10, 0]}> {/* Offset để điều chỉnh vị trí badge */}
-                    <CheckSquareOutlined />
-                </Badge>
-            ),
-            label: <Link to="/dashboard/tasks">Tác vụ và Dự án</Link>,
-        },
-    ];
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
-    return (
-        <S.StyledSider
-            collapsible
-            collapsed={collapsed}
-            onCollapse={setCollapsed}
-            breakpoint="lg"
-            collapsedWidth="80" // Đảm bảo khi collapse icon vẫn hiển thị rõ
-        >
-            <S.Logo onClick={() => navigate("/")}
-                style={{ cursor: "pointer", marginBottom: collapsed ? 24 : 16 }} // Điều chỉnh margin bottom
-            >
-                {/* Logo khi collapsed (chỉ icon) và khi mở rộng (icon + text) */}
-                {collapsed ? (
-                    <HomeOutlined style={{ fontSize: 24 }} />
-                ) : (
-                    <>
-                        <HomeOutlined style={{ fontSize: 24, marginRight: 8 }} />
-                        <span>Trang chủ</span>
-                    </>
-                )}
-            </S.Logo>
-            <Menu
-                theme="dark" // Giữ theme dark để menu tự động điều chỉnh màu chữ/nền nếu cần
-                mode="inline"
-                selectedKeys={[pathname]}
-                items={items}
-                defaultOpenKeys={['collaboration']} // Mở mặc định phần "Hợp tác"
-            />
-        </S.StyledSider>
-    );
+  // Main navigation items
+  const mainItems = [
+    {
+      key: "/dashboard/workspace",
+      icon: <AppstoreOutlined />,
+      label: <Link to="/dashboard/workspace">Workspace</Link>,
+    },
+    {
+      key: "/dashboard/tasks",
+      icon: (
+        <Badge count={3} size="small" offset={[4, -4]}>
+          <CheckSquareOutlined />
+        </Badge>
+      ),
+      label: <Link to="/dashboard/tasks">Tác vụ & Dự án</Link>,
+    },
+    {
+      key: "/dashboard/projects",
+      icon: <ProjectOutlined />,
+      label: <Link to="/dashboard/projects">Dự án</Link>,
+    },
+    {
+      key: "/dashboard/calendar",
+      icon: <CalendarOutlined />,
+      label: <Link to="/dashboard/calendar">Lịch</Link>,
+    },
+    {
+      key: "/dashboard/performance",
+      icon: <LineChartOutlined />,
+      label: <Link to="/dashboard/performance">Hiệu suất</Link>,
+    },
+  ];
+
+  // Collaboration submenu
+  const collaborationItems = [
+    {
+      key: "collaboration-header",
+      type: "group",
+      label: "Hợp tác & Giao tiếp",
+      children: [
+        {
+          key: "/dashboard/chat",
+          icon: (
+            <Badge count={5} size="small" offset={[4, -4]}>
+              <MessageOutlined />
+            </Badge>
+          ),
+          label: <Link to="/dashboard/chat">Trình nhắn tin</Link>,
+        },
+        {
+          key: "/dashboard/news",
+          icon: <FileTextOutlined />,
+          label: <Link to="/dashboard/news">Bản tin</Link>,
+        },
+        {
+          key: "/dashboard/work-groups",
+          icon: <TeamOutlined />,
+          label: <Link to="/dashboard/work-groups">Nhóm làm việc</Link>,
+        },
+      ],
+    },
+  ];
+
+  // Tools & Resources submenu
+
+  // Combine all items
+  const allItems = [
+    ...mainItems,
+    { type: "divider", key: "divider-1" },
+    ...collaborationItems,
+    { type: "divider", key: "divider-2" },
+  ];
+
+  return (
+    <S.StyledSider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={setCollapsed}
+      breakpoint="lg"
+      collapsedWidth="80"
+      style={{
+        overflow: "auto",
+        height: "100vh",
+        position: "fixed",
+        left: 0,
+        top: 0,
+        bottom: 0,
+      }}
+    >
+      <S.Logo
+        onClick={() => navigate("/")}
+        style={{
+          cursor: "pointer",
+          marginBottom: collapsed ? 16 : 24,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: collapsed ? "center" : "flex-start",
+          padding: collapsed ? "0" : "0 16px",
+        }}
+      >
+        <HomeOutlined
+          style={{
+            fontSize: collapsed ? 24 : 20,
+            marginRight: collapsed ? 0 : 12,
+            color: "#fff",
+          }}
+        />
+        {!collapsed && (
+          <span style={{ color: "#fff", fontWeight: "bold" }}>Trang chủ</span>
+        )}
+      </S.Logo>
+
+      <Menu
+        theme="dark"
+        mode="inline"
+        selectedKeys={[pathname]}
+        items={allItems}
+        defaultOpenKeys={
+          collapsed ? [] : ["collaboration-header", "tools-header"]
+        }
+        style={{
+          borderRight: "none",
+          backgroundColor: "transparent",
+        }}
+      />
+
+      {/* Settings at bottom */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 16,
+          left: collapsed ? "50%" : 24,
+          transform: collapsed ? "translateX(-50%)" : "none",
+          width: collapsed ? "auto" : "calc(100% - 48px)",
+        }}
+      >
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[]}
+          items={[
+            {
+              key: "/dashboard/settings",
+              icon: <SettingOutlined />,
+              label: collapsed ? null : (
+                <Link to="/dashboard/settings">Cài đặt</Link>
+              ),
+            },
+          ]}
+          style={{
+            borderRight: "none",
+            backgroundColor: "transparent",
+          }}
+        />
+      </div>
+    </S.StyledSider>
+  );
 }
