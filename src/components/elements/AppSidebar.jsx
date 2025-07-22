@@ -37,16 +37,7 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
       ),
       tooltip: "Workspace",
     },
-    {
-      key: "/dashboard/tasks",
-      icon: (
-        <Badge count={8} size="small" offset={[8, -8]}>
-          <CheckSquareOutlined />
-        </Badge>
-      ),
-      label: collapsed ? null : <Link to="/dashboard/tasks">Tác vụ</Link>,
-      tooltip: "Tác vụ (8 mới)",
-    },
+
     {
       key: "/dashboard/projects",
       icon: <ProjectOutlined />,
@@ -100,16 +91,6 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
           <Link to="/dashboard/work-groups">Nhóm làm việc</Link>
         ),
         tooltip: "Nhóm làm việc",
-      },
-      {
-        key: "/dashboard/webmail",
-        icon: (
-          <Badge count={3} size="small" offset={[8, -8]}>
-            <MailOutlined />
-          </Badge>
-        ),
-        label: collapsed ? null : <Link to="/dashboard/webmail">Webmail</Link>,
-        tooltip: "Webmail (3 email mới)",
       },
     ],
   };
