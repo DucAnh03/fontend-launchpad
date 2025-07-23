@@ -6,8 +6,7 @@ export interface IProjectOption {
 }
 
 export async function getMyProjects(): Promise<IProjectOption[]> {
-    const { data } = await api.get('/projects/user'); // <- trùng router backend
-
+    const { data } = await api.get('/projects/my'); 
     return data.data;
 }
 
