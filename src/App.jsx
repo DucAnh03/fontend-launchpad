@@ -47,12 +47,13 @@ import CalendarPage from "@/components/pages/Dashboard/CalendarPage";
 
 // pages – admin
 import AdminDashboard from "@/components/pages/admin/AdminDashboard";
-// import UsersManagement from "@/components/pages/Admin/UsersManagement";
-// import PostsManagement from "@/components/pages/Admin/PostsManagement";
-// import RecruitmentsManagement from "@/components/pages/Admin/RecruitmentsManagement";
-// import AnalyticsPage from "@/components/pages/Admin/AnalyticsPage";
-// import ReportsPage from "@/components/pages/Admin/ReportsPage";
-// import PaymentsManagement from "@/components/pages/Admin/PaymentsManagement";
+import UsersManagement from "@/components/pages/admin/UsersManagement";
+import PaymentsManagement from "@/components/pages/admin/PaymentsManagement";
+// import PostsManagement from "@/components/pages/admin/PostsManagement";
+// import RecruitmentsManagement from "@/components/pages/admin/RecruitmentsManagement";
+// import AnalyticsPage from "@/components/pages/admin/AnalyticsPage";
+// import ReportsPage from "@/components/pages/admin/ReportsPage";
+// import PaymentsManagement from "@/components/pages/admin/PaymentsManagement";
 // import SubscriptionsManagement from "@/components/pages/Admin/SubscriptionsManagement";
 // import ModerationPage from "@/components/pages/Admin/ModerationPage";
 // import AdminSettings from "@/components/pages/Admin/AdminSettings";
@@ -143,7 +144,9 @@ export default function App() {
         }
       >
         <Route path="/admin" element={<AdminDashboard />} />
-        {/* <Route path="/admin/users" element={<UsersManagement />} />
+        <Route path="/admin/users" element={<UsersManagement />} />
+        <Route path="/admin/payments" element={<PaymentsManagement />} />
+        {/* <Route path="/admin/users" element={<UsersManagement />
         <Route path="/admin/posts" element={<PostsManagement />} />
         <Route
           path="/admin/recruitments"
