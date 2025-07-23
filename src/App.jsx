@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
@@ -7,9 +6,11 @@ import AuthLayout from "@/components/core/layouts/AuthLayout/AuthLayout";
 import MainLayout from "@/components/core/layouts/MainLayout/MainLayout";
 import DashboardLayout from "@/components/core/layouts/DashboardLayout/DashboardLayout";
 import ProfileLayout from "@/components/core/layouts/ProfileLayout/ProfileLayout";
+import AdminLayout from "@/components/core/layouts/AdminLayout/AdminLayout"; // New Admin Layout
 
 // auth guard
 import RequireAuth from "@/components/common/RequireAuth";
+import RequireAdmin from "@/components/common/RequireAdmin"; // New Admin Guard
 
 // pages – public
 import SignInPage from "@/components/pages/Auth/SignInPage/SignIn";
@@ -43,6 +44,22 @@ import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
 import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
 import CalendarPage from "@/components/pages/Dashboard/CalendarPage";
+
+// pages – admin
+import AdminDashboard from "@/components/pages/admin/AdminDashboard";
+// import UsersManagement from "@/components/pages/Admin/UsersManagement";
+// import PostsManagement from "@/components/pages/Admin/PostsManagement";
+// import RecruitmentsManagement from "@/components/pages/Admin/RecruitmentsManagement";
+// import AnalyticsPage from "@/components/pages/Admin/AnalyticsPage";
+// import ReportsPage from "@/components/pages/Admin/ReportsPage";
+// import PaymentsManagement from "@/components/pages/Admin/PaymentsManagement";
+// import SubscriptionsManagement from "@/components/pages/Admin/SubscriptionsManagement";
+// import ModerationPage from "@/components/pages/Admin/ModerationPage";
+// import AdminSettings from "@/components/pages/Admin/AdminSettings";
+// import AuditLogsPage from "@/components/pages/Admin/AuditLogsPage";
+// import SecuritySettings from "@/components/pages/Admin/SecuritySettings";
+// import NotificationsManagement from "@/components/pages/Admin/NotificationsManagement";
+// import DatabaseManagement from "@/components/pages/Admin/DatabaseManagement";
 
 import TempSelect from "./TempSelect";
 import UserPublicProfile from "@/components/pages/Profile/UserPublicProfile";
@@ -113,6 +130,47 @@ export default function App() {
           element={<TasksPage />}
         />
         <Route path="/dashboard/calendar" element={<CalendarPage />} />
+      </Route>
+
+      {/*** Admin routes - Only accessible by admin users ***/}
+      <Route
+        element={
+          <RequireAuth>
+            <RequireAdmin>
+              <AdminLayout />
+            </RequireAdmin>
+          </RequireAuth>
+        }
+      >
+        <Route path="/admin" element={<AdminDashboard />} />
+        {/* <Route path="/admin/users" element={<UsersManagement />} />
+        <Route path="/admin/posts" element={<PostsManagement />} />
+        <Route
+          path="/admin/recruitments"
+          element={<RecruitmentsManagement />}
+        /> */}
+
+        {/* Analytics & Reports */}
+        {/* <Route path="/admin/analytics" element={<AnalyticsPage />} />
+        <Route path="/admin/reports" element={<ReportsPage />} />
+        <Route path="/admin/audit" element={<AuditLogsPage />} /> */}
+
+        {/* Business & Finance */}
+        {/* <Route path="/admin/payments" element={<PaymentsManagement />} />
+        <Route
+          path="/admin/subscriptions"
+          element={<SubscriptionsManagement />}
+        /> */}
+
+        {/* System & Security */}
+        {/* <Route path="/admin/moderation" element={<ModerationPage />} />
+        <Route path="/admin/security" element={<SecuritySettings />} />
+        <Route
+          path="/admin/notifications"
+          element={<NotificationsManagement />}
+        />
+        <Route path="/admin/database" element={<DatabaseManagement />} />
+        <Route path="/admin/settings" element={<AdminSettings />} /> */}
       </Route>
     </Routes>
   );
