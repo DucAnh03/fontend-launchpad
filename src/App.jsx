@@ -44,6 +44,7 @@ import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
 import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
 import CalendarPage from "@/components/pages/Dashboard/CalendarPage";
+import WorkGroupsPage from '@/components/pages/Dashboard/WorkGroupsPage';
 
 // pages – admin
 import AdminDashboard from "@/components/pages/admin/AdminDashboard";
@@ -131,6 +132,7 @@ export default function App() {
           element={<TasksPage />}
         />
         <Route path="/dashboard/calendar" element={<CalendarPage />} />
+        <Route path="/dashboard/work-groups" element={<WorkGroupsPage />} />
       </Route>
 
       {/*** Admin routes - Only accessible by admin users ***/}

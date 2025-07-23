@@ -129,12 +129,25 @@ export default function TasksPage() {
     }
   };
 
-  // Thêm hàm xử lý kéo thả
+  // Thêm hàm kiểm tra quyền kéo thả
+  const canDragTo = (sourceStatus, destStatus) => {
+    if (isLeader()) return true;
+    // Member chỉ được kéo giữa todo <-> doing
+    const allowed = ['todo', 'doing'];
+    return allowed.includes(sourceStatus) && allowed.includes(destStatus);
+  };
+
+  // Sửa onDragEnd để kiểm tra quyền
   const onDragEnd = async (result) => {
     const { source, destination, draggableId } = result;
     if (!destination) return;
     // Nếu kéo sang cột khác
     if (source.droppableId !== destination.droppableId) {
+      // Kiểm tra quyền kéo thả
+      if (!canDragTo(source.droppableId, destination.droppableId)) {
+        message.warning('Chỉ leader mới được chuyển task vào/ra cột Hoàn thành!');
+        return;
+      }
       const taskId = draggableId;
       const newStatus = destination.droppableId;
       try {
@@ -426,6 +439,19 @@ export default function TasksPage() {
             label="Hạn chót"
           >
             <Input type="datetime-local" className="rounded-lg" />
+          </Form.Item>
+          <Form.Item
+            name="assigneeId"
+            label="Người được giao"
+          >
+            <Radio.Group className="w-full flex flex-col gap-2">
+              {members.map(m => (
+                <Radio.Button key={m.userId._id} value={m.userId._id} className="text-left w-full">
+                  {m.userId.name} ({m.userId.username})
+                  {m.role === 'leader' && ' ⭐'}
+                </Radio.Button>
+              ))}
+            </Radio.Group>
           </Form.Item>
           <Form.Item>
             <Button
