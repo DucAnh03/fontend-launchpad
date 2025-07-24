@@ -68,7 +68,9 @@ export default function DashboardLayout() {
         collapsed={collapsed}
         setCollapsed={setCollapsed}
       />
-      <Layout style={{ background: "#f5f7fa" }}>
+      <Layout
+        style={{ background: "#f5f7fa", marginLeft: collapsed ? 80 : 240, transition: 'margin-left 0.2s' }}
+      >
         <S.StyledHeader>
           <S.HeaderLeft>
             <Button
