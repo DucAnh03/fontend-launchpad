@@ -6,7 +6,7 @@ import api from '@/services/api/axios';
 export default function ProfileLayout() {
     const tabs = [
 
-        { to: 'recruitment', label: 'Recruitment' },
+        // { to: 'recruitment', label: 'Recruitment' },
         { to: 'posts', label: 'Post' },
         { to: 'portfolio', label: 'Portfolio' },
     ];
