@@ -44,24 +44,18 @@ import TasksPage from "@/components/pages/Dashboard/TasksPage";
 import ProjectsPage from "@/components/pages/Dashboard/ProjectsPage";
 import PerformancePage from "@/components/pages/Dashboard/PerformancePage";
 import CalendarPage from "@/components/pages/Dashboard/CalendarPage";
-import WorkGroupsPage from '@/components/pages/Dashboard/WorkGroupsPage';
+import WorkGroupsPage from "@/components/pages/Dashboard/WorkGroupsPage";
 
 // pages – admin
 import AdminDashboard from "@/components/pages/admin/AdminDashboard";
 import UsersManagement from "@/components/pages/admin/UsersManagement";
 import PaymentsManagement from "@/components/pages/admin/PaymentsManagement";
+import AdminSubscriptionPlans from "@/components/pages/admin/AdminSubscriptionPlans";
 // import PostsManagement from "@/components/pages/admin/PostsManagement";
 // import RecruitmentsManagement from "@/components/pages/admin/RecruitmentsManagement";
 // import AnalyticsPage from "@/components/pages/admin/AnalyticsPage";
 // import ReportsPage from "@/components/pages/admin/ReportsPage";
 // import PaymentsManagement from "@/components/pages/admin/PaymentsManagement";
-// import SubscriptionsManagement from "@/components/pages/Admin/SubscriptionsManagement";
-// import ModerationPage from "@/components/pages/Admin/ModerationPage";
-// import AdminSettings from "@/components/pages/Admin/AdminSettings";
-// import AuditLogsPage from "@/components/pages/Admin/AuditLogsPage";
-// import SecuritySettings from "@/components/pages/Admin/SecuritySettings";
-// import NotificationsManagement from "@/components/pages/Admin/NotificationsManagement";
-// import DatabaseManagement from "@/components/pages/Admin/DatabaseManagement";
 
 import TempSelect from "./TempSelect";
 import UserPublicProfile from "@/components/pages/Profile/UserPublicProfile";
@@ -75,7 +69,10 @@ export default function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/oauth-callback" element={<OAuthCallback />} />
         <Route path="/verify-signup" element={<VerifySignUp />} />
-        <Route path="/subscription" element={<SubscriptionPage />} />
+        <Route
+          path="/subscription-plans/active"
+          element={<SubscriptionPage />}
+        />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/failed" element={<PaymentFailed />} />
       </Route>
@@ -148,12 +145,10 @@ export default function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/users" element={<UsersManagement />} />
         <Route path="/admin/payments" element={<PaymentsManagement />} />
-        {/* <Route path="/admin/users" element={<UsersManagement />
-        <Route path="/admin/posts" element={<PostsManagement />} />
         <Route
-          path="/admin/recruitments"
-          element={<RecruitmentsManagement />}
-        /> */}
+          path="/admin/subscription-plans"
+          element={<AdminSubscriptionPlans />}
+        />
 
         {/* Analytics & Reports */}
         {/* <Route path="/admin/analytics" element={<AnalyticsPage />} />

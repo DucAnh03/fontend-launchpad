@@ -248,14 +248,6 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
       label: collapsed ? null : <Link to="/admin/posts">Bài viết</Link>,
       tooltip: "Quản lý bài viết (5 chờ duyệt)",
     },
-    {
-      key: "/admin/recruitments",
-      icon: <TeamOutlined />,
-      label: collapsed ? null : (
-        <Link to="/admin/recruitments">Tuyển dụng</Link>
-      ),
-      tooltip: "Quản lý tuyển dụng",
-    },
   ];
 
   // Analytics & Reports
@@ -278,14 +270,6 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
         label: collapsed ? null : <Link to="/admin/reports">Báo cáo</Link>,
         tooltip: "Báo cáo & Thống kê",
       },
-      {
-        key: "/admin/audit",
-        icon: <AuditOutlined />,
-        label: collapsed ? null : (
-          <Link to="/admin/audit">Nhật ký hệ thống</Link>
-        ),
-        tooltip: "Nhật ký hệ thống",
-      },
     ],
   };
 
@@ -306,10 +290,10 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
         tooltip: "Quản lý thanh toán (3 cần xử lý)",
       },
       {
-        key: "/admin/subscriptions",
+        key: "/admin/subscription-plans",
         icon: <GiftOutlined />,
         label: collapsed ? null : (
-          <Link to="/admin/subscriptions">Gói dịch vụ</Link>
+          <Link to="/admin/subscription-plans">Gói dịch vụ</Link>
         ),
         tooltip: "Quản lý gói dịch vụ",
       },
