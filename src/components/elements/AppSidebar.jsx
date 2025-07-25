@@ -32,38 +32,29 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
     {
       key: "/dashboard/workspace",
       icon: <AppstoreOutlined />,
-      label: collapsed ? null : (
-        <Link to="/dashboard/workspace">Workspace</Link>
-      ),
-      tooltip: "Workspace",
+      label: <Link to="/dashboard/workspace">Workspace</Link>,
     },
-
     {
       key: "/dashboard/projects",
       icon: <ProjectOutlined />,
-      label: collapsed ? null : <Link to="/dashboard/projects">Dự án</Link>,
-      tooltip: "Dự án",
+      label: <Link to="/dashboard/projects">Dự án</Link>,
     },
     {
       key: "/dashboard/calendar",
       icon: <CalendarOutlined />,
-      label: collapsed ? null : <Link to="/dashboard/calendar">Lịch</Link>,
-      tooltip: "Lịch",
+      label: <Link to="/dashboard/calendar">Lịch</Link>,
     },
     {
       key: "/dashboard/performance",
       icon: <LineChartOutlined />,
-      label: collapsed ? null : (
-        <Link to="/dashboard/performance">Hiệu suất</Link>
-      ),
-      tooltip: "Hiệu suất",
+      label: <Link to="/dashboard/performance">Hiệu suất</Link>,
     },
   ];
 
   // Communication & collaboration
   const collaborationItems = {
     key: "collaboration",
-    label: collapsed ? null : "Hợp tác",
+    label: "Hợp tác",
     type: "group",
     children: [
       {
@@ -73,24 +64,17 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
             <MessageOutlined />
           </Badge>
         ),
-        label: collapsed ? null : (
-          <Link to="/dashboard/chat">Trình nhắn tin</Link>
-        ),
-        tooltip: "Trình nhắn tin (12 tin mới)",
+        label: <Link to="/dashboard/chat">Trình nhắn tin</Link>,
       },
       {
         key: "/community",
         icon: <FileTextOutlined />,
-        label: collapsed ? null : <Link to="/community">Bản tin</Link>,
-        tooltip: "Bản tin",
+        label: <Link to="/community">Bản tin</Link>,
       },
       {
         key: "/dashboard/work-groups",
         icon: <TeamOutlined />,
-        label: collapsed ? null : (
-          <Link to="/dashboard/work-groups">Nhóm làm việc</Link>
-        ),
-        tooltip: "Nhóm làm việc",
+        label: <Link to="/dashboard/work-groups">Nhóm làm việc</Link>,
       },
     ],
   };
@@ -99,21 +83,9 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
   const items = [
     ...workspaceItems,
     { type: "divider" },
-    ...(collapsed ? collaborationItems.children : [collaborationItems]),
+    [collaborationItems],
     { type: "divider" },
   ];
-
-  // Render menu item with tooltip for collapsed state
-  const renderMenuItem = (item) => {
-    if (collapsed && item.tooltip) {
-      return (
-        <Tooltip title={item.tooltip} placement="right">
-          <div>{item.icon}</div>
-        </Tooltip>
-      );
-    }
-    return item;
-  };
 
   return (
     <S.StyledSider
@@ -187,20 +159,7 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
         theme="dark"
         mode="inline"
         selectedKeys={[pathname]}
-        items={items.map((item) => {
-          if (item.type === "divider") return item;
-          if (collapsed && item.tooltip) {
-            return {
-              ...item,
-              label: (
-                <Tooltip title={item.tooltip} placement="right">
-                  {item.label || <span></span>}
-                </Tooltip>
-              ),
-            };
-          }
-          return item;
-        })}
+        items={items.flat()}
         defaultOpenKeys={
           collapsed ? [] : ["collaboration", "tools", "business"]
         }
@@ -208,47 +167,28 @@ export default function AppSidebar({ isDashboard, collapsed, setCollapsed }) {
           borderRight: "none",
           backgroundColor: "transparent",
           flex: 1,
-          paddingBottom: "80px", // Space for settings at bottom
+          paddingBottom: "0px",
         }}
       />
 
-      {/* Settings at bottom */}
-      <div
+      {/* Settings ngay dưới menu chính */}
+      <Menu
+        theme="dark"
+        mode="inline"
+        selectedKeys={
+          pathname === "/dashboard/settings" ? ["/dashboard/settings"] : []
+        }
+        items={[{
+          key: "/dashboard/settings",
+          icon: <SettingOutlined />,
+          label: <Link to="/dashboard/settings">Cài đặt</Link>,
+        }]}
         style={{
-          position: "absolute",
-          bottom: 16,
-          left: 0,
-          right: 0,
-          padding: collapsed ? "0 16px" : "0 8px",
+          borderRight: "none",
+          backgroundColor: "transparent",
+          marginTop: 8,
         }}
-      >
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={
-            pathname === "/dashboard/settings" ? ["/dashboard/settings"] : []
-          }
-          items={[
-            {
-              key: "/dashboard/settings",
-              icon: collapsed ? (
-                <Tooltip title="Cài đặt" placement="right">
-                  <SettingOutlined />
-                </Tooltip>
-              ) : (
-                <SettingOutlined />
-              ),
-              label: collapsed ? null : (
-                <Link to="/dashboard/settings">Cài đặt</Link>
-              ),
-            },
-          ]}
-          style={{
-            borderRight: "none",
-            backgroundColor: "transparent",
-          }}
-        />
-      </div>
+      />
     </S.StyledSider>
   );
 }

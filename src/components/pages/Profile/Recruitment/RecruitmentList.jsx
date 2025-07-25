@@ -139,17 +139,19 @@ export default function RecruitmentList() {
                         sm: 1,
                         md: 2,
                         lg: 2,
-                        xl: 3,
-                        xxl: 3,
+                        xl: 2,
+                        xxl: 2,
                     }}
                     dataSource={data}
                     renderItem={item => (
-                        <List.Item>
+                        <List.Item className="w-full">
                             <Card
                                 hoverable
-                                className="recruitment-card"
+                                className="recruitment-card w-full"
                                 style={{
                                     height: '100%',
+                                    width: '100%',
+                                    maxWidth: '100%',
                                     border: isDeadlinePassed(item.deadline) ? '2px solid #ff4d4f' : '1px solid #f0f0f0'
                                 }}
                                 actions={[

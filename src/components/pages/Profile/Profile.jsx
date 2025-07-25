@@ -25,6 +25,7 @@ import {
   Upload,
 } from "antd";
 import BecomeLeaderVerification from "./BecomeLeaderVerification";
+import RecruitmentList from "@/components/pages/Profile/Recruitment/RecruitmentList";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -146,7 +147,10 @@ const Profile = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-4 bg-gray-50 min-h-screen">
+    <div
+      className="px-4 py-4 bg-gray-50 min-h-screen w-full"
+      style={{ paddingLeft: 240 }}
+    >
       {/* Profile Header */}
       <div className="bg-white rounded-xl shadow-lg p-8 mb-8 transform hover:scale-[1.01] transition-transform duration-200">
         <div className="flex items-center space-x-8">
@@ -222,9 +226,9 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Profile Content - Chia thành 2 cột: 40% bên trái và 60% bên phải */}
-      <div className="grid grid-cols-5 gap-8">
-        {/* Cột trái - Chứa toàn bộ thông tin profile (40%) */}
+      {/* Profile Content - Chia thành 2 cột: 33% bên trái và 67% bên phải */}
+      <div className="grid grid-cols-6 gap-8">
+        {/* Cột trái - Chứa toàn bộ thông tin profile (33%) */}
         <div className="col-span-2 space-y-8">
           {" "}
           {/* col-span-2 trên tổng grid-cols-5 tương đương 40% */}
@@ -345,15 +349,9 @@ const Profile = () => {
           </Card>
         </div>
 
-        {/* Cột phải - Để trống cho nội dung sau (60%) */}
-        <div className="col-span-3">
-          {" "}
-          {/* col-span-3 trên tổng grid-cols-5 tương đương 60% */}
-          {/* Bạn của bạn có thể thêm code vào đây */}
-          {/* Ví dụ: */}
-          {/* <div className="bg-white rounded-xl shadow-lg p-8 h-full flex items-center justify-center text-gray-400">
-            Không gian trống cho nội dung khác
-          </div> */}
+        {/* Cột phải - Bài đăng tuyển dụng (67%) */}
+        <div className="col-span-4">
+          <RecruitmentList />
         </div>
       </div>
 
