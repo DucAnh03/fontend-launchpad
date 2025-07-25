@@ -126,7 +126,7 @@ export default function PerformancePage() {
                                         <div className="flex flex-wrap gap-2">
                                             {project.members.length === 0 ? (
                                                 <span className="text-gray-400 italic">Không có thành viên</span>
-                                            ) : project.members.map(member => (
+                                            ) : project.members.filter(member => member && member.userId && member.userId.username).map(member => (
                                                 <Tooltip title={member.userId.username} key={member.userId._id}>
                                                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-sm font-medium">
                                                         <Avatar size={24} src={member.userId.avatar} icon={<UserOutlined />} className="mr-1" style={{ background: member.role === 'leader' ? '#52c41a' : '#1890ff', color: '#fff' }}>
