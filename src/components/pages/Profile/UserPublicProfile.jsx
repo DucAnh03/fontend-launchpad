@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '@/services/api/axios';
+import RecruitmentList from './Recruitment/RecruitmentList';
+import PostsList from './PostsList';
+import PortfolioList from './PortfolioList';
 import { Card, Avatar, Spin, message } from 'antd';
 import {
   UserOutlined, MailOutlined, TrophyOutlined, StarOutlined, TeamOutlined
@@ -11,6 +14,7 @@ export default function UserPublicProfile() {
   console.log('UserPublicProfile userId:', userId); // Log userId để kiểm tra
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('recruitment');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -36,7 +40,7 @@ export default function UserPublicProfile() {
   if (!profile) return <div className="text-center py-8">Không tìm thấy user</div>;
 
   return (
-    <div className="container mx-auto px-4 py-4 bg-gray-50 min-h-screen">
+    <div className="px-4 py-4 bg-gray-50 min-h-screen w-full" style={{ paddingLeft: 240 }}>
       {/* Header */}
       <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
         <div className="flex items-center space-x-8">
@@ -54,7 +58,7 @@ export default function UserPublicProfile() {
       </div>
 
       {/* Content */}
-      <div className="grid grid-cols-5 gap-8">
+      <div className="grid grid-cols-6 gap-8">
         {/* Left column */}
         <div className="col-span-2 space-y-8">
           <Card title="Thông tin cơ bản" className="shadow-lg rounded-xl">
@@ -113,8 +117,32 @@ export default function UserPublicProfile() {
             </div>
           </Card>
         </div>
-        {/* Right column: có thể để trống hoặc thêm portfolio, bài viết, ... */}
-        <div className="col-span-3"></div>
+        {/* Right column: bài tuyển dụng của user */}
+        <div className="col-span-4">
+          <div className="flex gap-4 mb-4">
+            <button
+              className={`px-4 py-2 rounded-lg font-semibold border ${activeTab === 'recruitment' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-blue-500 border-blue-500'}`}
+              onClick={() => setActiveTab('recruitment')}
+            >
+              Recruitment Posts
+            </button>
+            <button
+              className={`px-4 py-2 rounded-lg font-semibold border ${activeTab === 'posts' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-blue-500 border-blue-500'}`}
+              onClick={() => setActiveTab('posts')}
+            >
+              Posts
+            </button>
+            <button
+              className={`px-4 py-2 rounded-lg font-semibold border ${activeTab === 'portfolio' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-blue-500 border-blue-500'}`}
+              onClick={() => setActiveTab('portfolio')}
+            >
+              Portfolio
+            </button>
+          </div>
+          {activeTab === 'recruitment' && <RecruitmentList userId={profile?._id} />}
+          {activeTab === 'posts' && <PostsList userId={profile?._id} />}
+          {activeTab === 'portfolio' && <PortfolioList userId={profile?._id} />}
+        </div>
       </div>
     </div>
   );

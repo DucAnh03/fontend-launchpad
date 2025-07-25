@@ -9,7 +9,7 @@ import PostApplications from '../../RecruitmentPage/PostApplications';
 
 const { Title, Text, Paragraph } = Typography;
 
-export default function RecruitmentList() {
+export default function RecruitmentList({ userId }) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updateModalVisible, setUpdateModalVisible] = useState(false);
@@ -22,11 +22,19 @@ export default function RecruitmentList() {
 
     useEffect(() => {
         fetchRecruitmentPosts();
-    }, []);
+    }, [userId]);
 
     const fetchRecruitmentPosts = () => {
-        api.get('/recruitment-posts')
-            .then(res => setData(res.data.data || []))
+        let url = '/recruitment-posts';
+        if (userId) {
+          url = `/recruitment-posts/public?userId=${userId}`;
+        }
+        api.get(url)
+            .then(res => {
+                let posts = res.data.data || [];
+                // Không cần filter lại, backend đã trả đúng leaderId
+                setData(posts);
+            })
             .catch(() => {
                 message.error('Không load được recruitment');
                 setData([]);
@@ -107,15 +115,17 @@ export default function RecruitmentList() {
                             Tổng cộng {data.length} bài đăng
                         </Text>
                     </div>
-                    <Button
-                        type="primary"
-                        size="large"
-                        icon={<PlusOutlined />}
-                        onClick={() => navigate('/recruitment/create')}
-                        className="create-button"
-                    >
-                        Tạo bài đăng mới
-                    </Button>
+                    {!userId && (
+                      <Button
+                          type="primary"
+                          size="large"
+                          icon={<PlusOutlined />}
+                          onClick={() => navigate('/recruitment/create')}
+                          className="create-button"
+                      >
+                          Tạo bài đăng mới
+                      </Button>
+                    )}
                 </div>
             </div>
 
@@ -126,9 +136,11 @@ export default function RecruitmentList() {
                         description="Chưa có bài đăng tuyển dụng nào"
                         style={{ marginTop: '60px' }}
                     >
-                        <Button type="primary" onClick={() => navigate('/recruitment/create')}>
-                            Tạo bài đăng đầu tiên
-                        </Button>
+                        {!userId && (
+                          <Button type="primary" onClick={() => navigate('/recruitment/create')}>
+                              Tạo bài đăng đầu tiên
+                          </Button>
+                        )}
                     </Empty>
                 </div>
             ) : (

@@ -4,7 +4,7 @@ import api from '@/services/api/axios';
 import { useAuthContext } from '@/contexts/AuthContext';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-export default function PostsList() {
+export default function PostsList({ userId: propUserId }) {
   const { user } = useAuthContext();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,10 +14,11 @@ export default function PostsList() {
 
   // Fetch posts by author with pagination
   const fetchPosts = async (page = 1) => {
-    if (!user?._id) return;
+    const id = propUserId || user?._id;
+    if (!id) return;
     try {
       setLoading(true);
-      const res = await api.get(`/posts/author/${user._id}?page=${page}&limit=${limit}`);
+      const res = await api.get(`/posts/author/${id}?page=${page}&limit=${limit}`);
       const newPosts = res.data.data.posts || [];
       const total = res.data.data.pagination?.total || 0;
       if (page === 1) {
@@ -35,9 +36,10 @@ export default function PostsList() {
   };
 
   useEffect(() => {
-    if (user?._id) fetchPosts(1);
+    const id = propUserId || user?._id;
+    if (id) fetchPosts(1);
     // eslint-disable-next-line
-  }, [user]);
+  }, [propUserId, user]);
 
   const loadMoreData = () => {
     if (!loading && hasMore) {

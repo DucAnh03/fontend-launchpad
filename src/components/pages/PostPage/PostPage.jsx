@@ -229,6 +229,25 @@ export default function PostPage() {
     }
   };
 
+  // Upvote/Downvote handlers
+  const handleUpvote = async (postId) => {
+    try {
+      const res = await api.post(`/vote/post/${postId}/upvote`);
+      // Cập nhật lại số upvote/downvote cho post
+      setPosts((prev) => prev.map(p => p._id === postId ? { ...p, upvotes: res.data.upvotes, downvotes: res.data.downvotes } : p));
+    } catch (err) {
+      message.error(err.response?.data?.message || 'Upvote thất bại!');
+    }
+  };
+  const handleDownvote = async (postId) => {
+    try {
+      const res = await api.post(`/vote/post/${postId}/downvote`);
+      setPosts((prev) => prev.map(p => p._id === postId ? { ...p, upvotes: res.data.upvotes, downvotes: res.data.downvotes } : p));
+    } catch (err) {
+      message.error(err.response?.data?.message || 'Downvote thất bại!');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-2xl mx-auto px-4 py-6">
@@ -523,20 +542,20 @@ export default function PostPage() {
                   )}
 
                   <div className="flex items-center justify-center gap-8 mt-5 pt-4 border-t border-gray-100">
-                    <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-green-500 transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-green-50 group">
+                    <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-green-500 transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-green-50 group" onClick={() => handleUpvote(post._id)}>
                       <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                       </svg>
                       <span className="text-xs font-medium">Upvote</span>
-                      <span className="text-xs text-gray-400">0</span>
+                      <span className="text-xs text-gray-400">{post.upvotes || 0}</span>
                     </button>
 
-                    <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-red-500 transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-red-50 group">
+                    <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-red-500 transition-colors duration-200 py-2 px-4 rounded-lg hover:bg-red-50 group" onClick={() => handleDownvote(post._id)}>
                       <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                       <span className="text-xs font-medium">Downvote</span>
-                      <span className="text-xs text-gray-400">0</span>
+                      <span className="text-xs text-gray-400">{post.downvotes || 0}</span>
                     </button>
                   </div>
                 </div>
