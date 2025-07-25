@@ -25,7 +25,7 @@ export default function ChatWindow({ conv, onClose }) {
         setLoading(true);
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          `http://localhost:3000/api/messages/${conv.id}`,
+          `http://localhost:5000/api/messages/${conv.id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setMessages(
