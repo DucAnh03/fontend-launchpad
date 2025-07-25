@@ -33,6 +33,11 @@ const SubscriptionPage = () => {
   const handlePay = async (plan) => {
     setLoading(true);
     setError("");
+    console.log("Payment request:", {
+      planId: plan._id,
+      userToken: localStorage.getItem("token"),
+      planData: plan,
+    });
     try {
       const { data } = await api.post("/payment/create", {
         planId: plan._id,

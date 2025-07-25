@@ -75,6 +75,8 @@ export default function App() {
         />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/failed" element={<PaymentFailed />} />
+
+        <Route path="/payment/error" element={<PaymentSuccess />} />
       </Route>
 
       {/*** Protected routes ***/}
