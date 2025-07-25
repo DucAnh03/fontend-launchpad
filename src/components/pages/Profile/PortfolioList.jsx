@@ -4,7 +4,7 @@ import api from '@/services/api/axios';
 import { useAuthContext } from '@/contexts/AuthContext';
 import PortfolioDetail from '../Portfolio/PortfolioDetail';
 
-export default function PortfolioList() {
+export default function PortfolioList({ userId: propUserId }) {
   const { user } = useAuthContext();
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,10 +12,11 @@ export default function PortfolioList() {
   const [detailVisible, setDetailVisible] = useState(false);
 
   const fetchPortfolios = async () => {
-    if (!user?._id) return;
+    const id = propUserId || user?._id;
+    if (!id) return;
     setLoading(true);
     try {
-      const res = await api.get(`/portfolio/author/${user._id}`);
+      const res = await api.get(`/portfolio/author/${id}`);
       setPortfolios(res.data.data || []);
     } catch (err) {
       message.error('Không load được portfolio');
@@ -25,10 +26,11 @@ export default function PortfolioList() {
   };
 
   useEffect(() => {
-    if (user?._id) fetchPortfolios();
-  }, [user]);
+    const id = propUserId || user?._id;
+    if (id) fetchPortfolios();
+  }, [propUserId, user]);
 
-  if (!user)
+  if (!propUserId && !user)
     return (
       <p className="text-center py-8">
         Bạn cần đăng nhập để sử dụng chức năng này.

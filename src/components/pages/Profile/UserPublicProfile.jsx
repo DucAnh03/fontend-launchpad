@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '@/services/api/axios';
 import RecruitmentList from './Recruitment/RecruitmentList';
+import PostsList from './PostsList';
+import PortfolioList from './PortfolioList';
 import { Card, Avatar, Spin, message } from 'antd';
 import {
   UserOutlined, MailOutlined, TrophyOutlined, StarOutlined, TeamOutlined
@@ -12,6 +14,7 @@ export default function UserPublicProfile() {
   console.log('UserPublicProfile userId:', userId); // Log userId để kiểm tra
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('recruitment');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -116,7 +119,29 @@ export default function UserPublicProfile() {
         </div>
         {/* Right column: bài tuyển dụng của user */}
         <div className="col-span-4">
-          <RecruitmentList userId={profile?._id} />
+          <div className="flex gap-4 mb-4">
+            <button
+              className={`px-4 py-2 rounded-lg font-semibold border ${activeTab === 'recruitment' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-blue-500 border-blue-500'}`}
+              onClick={() => setActiveTab('recruitment')}
+            >
+              Recruitment Posts
+            </button>
+            <button
+              className={`px-4 py-2 rounded-lg font-semibold border ${activeTab === 'posts' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-blue-500 border-blue-500'}`}
+              onClick={() => setActiveTab('posts')}
+            >
+              Posts
+            </button>
+            <button
+              className={`px-4 py-2 rounded-lg font-semibold border ${activeTab === 'portfolio' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white text-blue-500 border-blue-500'}`}
+              onClick={() => setActiveTab('portfolio')}
+            >
+              Portfolio
+            </button>
+          </div>
+          {activeTab === 'recruitment' && <RecruitmentList userId={profile?._id} />}
+          {activeTab === 'posts' && <PostsList userId={profile?._id} />}
+          {activeTab === 'portfolio' && <PortfolioList userId={profile?._id} />}
         </div>
       </div>
     </div>

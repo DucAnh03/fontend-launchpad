@@ -26,13 +26,13 @@ export default function RecruitmentList({ userId }) {
 
     const fetchRecruitmentPosts = () => {
         let url = '/recruitment-posts';
-        if (userId) url += `?userId=${userId}`;
+        if (userId) {
+          url = `/recruitment-posts/public?userId=${userId}`;
+        }
         api.get(url)
             .then(res => {
                 let posts = res.data.data || [];
-                if (userId) {
-                    posts = posts.filter(post => post.author?._id === userId);
-                }
+                // Không cần filter lại, backend đã trả đúng leaderId
                 setData(posts);
             })
             .catch(() => {
