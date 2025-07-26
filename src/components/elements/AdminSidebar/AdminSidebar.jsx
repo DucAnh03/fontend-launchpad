@@ -238,40 +238,7 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
       label: collapsed ? null : <Link to="/admin/users">Người dùng</Link>,
       tooltip: "Quản lý người dùng (12 mới)",
     },
-    {
-      key: "/admin/posts",
-      icon: (
-        <Badge count={5} size="small" offset={[8, -8]}>
-          <FileTextOutlined />
-        </Badge>
-      ),
-      label: collapsed ? null : <Link to="/admin/posts">Bài viết</Link>,
-      tooltip: "Quản lý bài viết (5 chờ duyệt)",
-    },
   ];
-
-  // Analytics & Reports
-  const analyticsItems = {
-    key: "analytics-group",
-    label: collapsed ? null : "Phân tích & Báo cáo",
-    type: "group",
-    children: [
-      {
-        key: "/admin/analytics",
-        icon: <LineChartOutlined />,
-        label: collapsed ? null : (
-          <Link to="/admin/analytics">Phân tích dữ liệu</Link>
-        ),
-        tooltip: "Phân tích dữ liệu",
-      },
-      {
-        key: "/admin/reports",
-        icon: <BarChartOutlined />,
-        label: collapsed ? null : <Link to="/admin/reports">Báo cáo</Link>,
-        tooltip: "Báo cáo & Thống kê",
-      },
-    ],
-  };
 
   // Business & Finance
   const businessItems = {
@@ -304,7 +271,7 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
   const allItems = [
     ...coreItems,
     { type: "divider", key: "divider-1" },
-    ...(collapsed ? analyticsItems.children : [analyticsItems]),
+
     { type: "divider", key: "divider-2" },
     ...(collapsed ? businessItems.children : [businessItems]),
   ];

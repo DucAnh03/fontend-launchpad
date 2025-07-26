@@ -24,6 +24,19 @@ import {
 } from "@ant-design/icons";
 import { useAuthContext } from "@/contexts/AuthContext";
 
+// ✅ Helper functions được định nghĩa bên ngoài component
+function countCompletedTasks(tasks) {
+  return tasks.filter((task) => task.status === "done").length;
+}
+
+function getOverdueTasks(tasks) {
+  const now = new Date();
+  return tasks.filter((task) => {
+    if (!task.dueDate || task.status === "done") return false;
+    return new Date(task.dueDate) < now;
+  });
+}
+
 export default function PerformancePage() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,19 +75,6 @@ export default function PerformancePage() {
     }
     fetchProjectsAndMembers();
   }, []);
-
-  // Helper: Lấy các task trễ deadline
-  function getOverdueTasks(tasks) {
-    const now = new Date();
-    return tasks.filter(
-      (task) =>
-        task.status !== "done" && task.dueDate && new Date(task.dueDate) < now
-    );
-  }
-  // Helper: Đếm số task hoàn thành
-  function countCompletedTasks(tasks) {
-    return tasks.filter((task) => task.status === "done").length;
-  }
 
   // Kiểm tra user hiện tại có phải leader của project không
   function isLeader(project) {

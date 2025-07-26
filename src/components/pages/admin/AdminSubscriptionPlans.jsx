@@ -9,7 +9,6 @@ import {
   Form,
   Input,
   InputNumber,
-  Select,
   Switch,
   message,
   Popconfirm,
@@ -20,6 +19,7 @@ import {
   Tooltip,
   Badge,
   Divider,
+  Checkbox,
 } from "antd";
 import {
   PlusOutlined,
@@ -39,7 +39,6 @@ import api from "@/services/api/axios";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-const { Option } = Select;
 
 // Styled Components
 const PageContainer = styled.div`
@@ -81,6 +80,112 @@ const MainCard = styled(Card)`
   }
 `;
 
+// ✅ Simple Custom Select Component
+const SimpleSelect = styled.select`
+  width: 100%;
+  height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  color: #262626;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    outline: none;
+  }
+
+  &:hover {
+    border-color: #40a9ff;
+  }
+
+  option {
+    padding: 8px;
+    background: white;
+    color: #262626;
+  }
+`;
+
+// ✅ Multiple Select Component (sử dụng checkboxes)
+const MultipleSelect = ({ value = [], onChange, options, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = (optionValue) => {
+    const newValue = value.includes(optionValue)
+      ? value.filter((v) => v !== optionValue)
+      : [...value, optionValue];
+    onChange(newValue);
+  };
+
+  return (
+    <div style={{ position: "relative" }}>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "6px",
+          padding: "8px 12px",
+          minHeight: "40px",
+          background: "white",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span style={{ color: value.length ? "#262626" : "#bfbfbf" }}>
+          {value.length ? `Đã chọn ${value.length} mục` : placeholder}
+        </span>
+        <span style={{ color: "#8c8c8c" }}>▼</span>
+      </div>
+
+      {isOpen && (
+        <div
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            right: 0,
+            background: "white",
+            border: "1px solid #d9d9d9",
+            borderRadius: "6px",
+            zIndex: 1000,
+            maxHeight: "200px",
+            overflowY: "auto",
+            marginTop: "2px",
+          }}
+        >
+          {options.map((option) => (
+            <div
+              key={option.value}
+              style={{
+                padding: "8px 12px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                ":hover": { background: "#f5f5f5" },
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggle(option.value);
+              }}
+              onMouseEnter={(e) => (e.target.style.background = "#f5f5f5")}
+              onMouseLeave={(e) => (e.target.style.background = "white")}
+            >
+              <Checkbox checked={value.includes(option.value)} />
+              <span>{option.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AdminSubscriptionPlans = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -93,7 +198,41 @@ const AdminSubscriptionPlans = () => {
     tier: "",
   });
 
+  // Form states for vanilla inputs
+  const [formData, setFormData] = useState({
+    planName: "",
+    tier: "",
+    description: "",
+    price: "",
+    duration: "",
+    durationType: "",
+    features: "",
+    permissions: [],
+    maxProjects: "",
+    maxMembers: "",
+    isActive: true,
+    isPopular: false,
+  });
+
   const [form] = Form.useForm();
+
+  // Reset form data
+  const resetFormData = () => {
+    setFormData({
+      planName: "",
+      tier: "",
+      description: "",
+      price: "",
+      duration: "",
+      durationType: "",
+      features: "",
+      permissions: [],
+      maxProjects: "",
+      maxMembers: "",
+      isActive: true,
+      isPopular: false,
+    });
+  };
 
   // Fetch plans
   const fetchPlans = async () => {
@@ -129,14 +268,30 @@ const AdminSubscriptionPlans = () => {
   }, [filters]);
 
   // Handle create/edit plan
-  const handleSubmit = async (values) => {
+  const handleSubmit = async () => {
     try {
+      // Validation
+      if (
+        !formData.planName ||
+        !formData.tier ||
+        !formData.description ||
+        !formData.price ||
+        !formData.duration ||
+        !formData.durationType
+      ) {
+        message.error("Vui lòng điền đầy đủ thông tin bắt buộc!");
+        return;
+      }
+
       setLoading(true);
 
       const submitData = {
-        ...values,
-        features: values.features || [],
-        permissions: values.permissions || [],
+        ...formData,
+        price: Number(formData.price),
+        duration: Number(formData.duration),
+        maxProjects: formData.maxProjects ? Number(formData.maxProjects) : null,
+        maxMembers: formData.maxMembers ? Number(formData.maxMembers) : null,
+        features: formData.features.split("\n").filter((f) => f.trim()),
       };
 
       if (editingPlan) {
@@ -152,7 +307,7 @@ const AdminSubscriptionPlans = () => {
 
       setModalVisible(false);
       setEditingPlan(null);
-      form.resetFields();
+      resetFormData();
       fetchPlans();
       fetchStatistics();
     } catch (error) {
@@ -165,9 +320,19 @@ const AdminSubscriptionPlans = () => {
   // Handle edit
   const handleEdit = (plan) => {
     setEditingPlan(plan);
-    form.setFieldsValue({
-      ...plan,
+    setFormData({
+      planName: plan.planName || "",
+      tier: plan.tier || "",
+      description: plan.description || "",
+      price: plan.price || "",
+      duration: plan.duration || "",
+      durationType: plan.durationType || "",
       features: plan.features?.join("\n") || "",
+      permissions: plan.permissions || [],
+      maxProjects: plan.maxProjects || "",
+      maxMembers: plan.maxMembers || "",
+      isActive: plan.isActive !== false,
+      isPopular: plan.isPopular || false,
     });
     setModalVisible(true);
   };
@@ -217,6 +382,14 @@ const AdminSubscriptionPlans = () => {
       message.error("Lỗi khi sao chép gói");
     }
   };
+
+  // Permission options
+  const permissionOptions = [
+    { value: "community_access", label: "Truy cập Community" },
+    { value: "group_chat", label: "Chat nhóm" },
+    { value: "project_collaboration", label: "Hợp tác dự án" },
+    { value: "premium_support", label: "Hỗ trợ cao cấp" },
+  ];
 
   // Table columns
   const columns = [
@@ -394,7 +567,7 @@ const AdminSubscriptionPlans = () => {
             icon={<PlusOutlined />}
             onClick={() => {
               setEditingPlan(null);
-              form.resetFields();
+              resetFormData();
               setModalVisible(true);
             }}
             style={{
@@ -406,7 +579,7 @@ const AdminSubscriptionPlans = () => {
           </Button>
         }
       >
-        {/* Filters */}
+        {/* ✅ Filters với vanilla selects */}
         <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
           <Col xs={24} sm={8}>
             <Input
@@ -419,29 +592,27 @@ const AdminSubscriptionPlans = () => {
             />
           </Col>
           <Col xs={24} sm={8}>
-            <Select
-              placeholder="Trạng thái"
-              style={{ width: "100%" }}
+            <SimpleSelect
               value={filters.isActive}
-              onChange={(value) => setFilters({ ...filters, isActive: value })}
-              allowClear
+              onChange={(e) =>
+                setFilters({ ...filters, isActive: e.target.value })
+              }
             >
-              <Option value="true">Hoạt động</Option>
-              <Option value="false">Tạm dừng</Option>
-            </Select>
+              <option value="">Tất cả trạng thái</option>
+              <option value="true">Hoạt động</option>
+              <option value="false">Tạm dừng</option>
+            </SimpleSelect>
           </Col>
           <Col xs={24} sm={8}>
-            <Select
-              placeholder="Tier"
-              style={{ width: "100%" }}
+            <SimpleSelect
               value={filters.tier}
-              onChange={(value) => setFilters({ ...filters, tier: value })}
-              allowClear
+              onChange={(e) => setFilters({ ...filters, tier: e.target.value })}
             >
-              <Option value="basic">Basic</Option>
-              <Option value="premium">Premium</Option>
-              <Option value="enterprise">Enterprise</Option>
-            </Select>
+              <option value="">Tất cả tier</option>
+              <option value="basic">Basic</option>
+              <option value="premium">Premium</option>
+              <option value="enterprise">Enterprise</option>
+            </SimpleSelect>
           </Col>
         </Row>
 
@@ -459,59 +630,82 @@ const AdminSubscriptionPlans = () => {
         />
       </MainCard>
 
-      {/* Create/Edit Modal */}
+      {/* ✅ Create/Edit Modal với vanilla inputs */}
       <Modal
         title={editingPlan ? "Chỉnh sửa Gói" : "Thêm Gói Mới"}
         open={modalVisible}
         onCancel={() => {
           setModalVisible(false);
           setEditingPlan(null);
-          form.resetFields();
+          resetFormData();
         }}
         footer={null}
         width={800}
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <div style={{ maxHeight: "70vh", overflowY: "auto", padding: "0 4px" }}>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                name="planName"
-                label="Tên Gói"
-                rules={[{ required: true, message: "Vui lòng nhập tên gói!" }]}
-              >
-                <Input placeholder="VD: Crystal Premium" />
-              </Form.Item>
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Tên Gói *
+                </label>
+                <Input
+                  placeholder="VD: Crystal Premium"
+                  value={formData.planName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, planName: e.target.value })
+                  }
+                />
+              </div>
             </Col>
             <Col span={12}>
-              <Form.Item
-                name="tier"
-                label="Tier"
-                rules={[{ required: true, message: "Vui lòng chọn tier!" }]}
-              >
-                <Select placeholder="Chọn tier">
-                  <Option value="basic">Basic</Option>
-                  <Option value="premium">Premium</Option>
-                  <Option value="enterprise">Enterprise</Option>
-                </Select>
-              </Form.Item>
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Tier *
+                </label>
+                <SimpleSelect
+                  value={formData.tier}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tier: e.target.value })
+                  }
+                >
+                  <option value="">Chọn tier</option>
+                  <option value="basic">Basic</option>
+                  <option value="premium">Premium</option>
+                  <option value="enterprise">Enterprise</option>
+                </SimpleSelect>
+              </div>
             </Col>
           </Row>
 
-          <Form.Item
-            name="description"
-            label="Mô tả"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
-          >
-            <TextArea rows={3} placeholder="Mô tả chi tiết về gói dịch vụ..." />
-          </Form.Item>
+          <div style={{ marginBottom: 16 }}>
+            <label
+              style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+            >
+              Mô tả *
+            </label>
+            <TextArea
+              rows={3}
+              placeholder="Mô tả chi tiết về gói dịch vụ..."
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+            />
+          </div>
 
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item
-                name="price"
-                label="Giá"
-                rules={[{ required: true, message: "Vui lòng nhập giá!" }]}
-              >
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Giá *
+                </label>
                 <InputNumber
                   style={{ width: "100%" }}
                   min={0}
@@ -520,111 +714,165 @@ const AdminSubscriptionPlans = () => {
                   }
                   parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
                   placeholder="150000"
+                  value={formData.price}
+                  onChange={(value) =>
+                    setFormData({ ...formData, price: value })
+                  }
                 />
-              </Form.Item>
+              </div>
             </Col>
             <Col span={8}>
-              <Form.Item
-                name="duration"
-                label="Thời hạn"
-                rules={[{ required: true, message: "Vui lòng nhập thời hạn!" }]}
-              >
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Thời hạn *
+                </label>
                 <InputNumber
                   style={{ width: "100%" }}
                   min={1}
                   placeholder="1"
+                  value={formData.duration}
+                  onChange={(value) =>
+                    setFormData({ ...formData, duration: value })
+                  }
                 />
-              </Form.Item>
+              </div>
             </Col>
             <Col span={8}>
-              <Form.Item
-                name="durationType"
-                label="Đơn vị"
-                rules={[{ required: true, message: "Vui lòng chọn đơn vị!" }]}
-              >
-                <Select placeholder="Chọn đơn vị">
-                  <Option value="days">Ngày</Option>
-                  <Option value="months">Tháng</Option>
-                  <Option value="years">Năm</Option>
-                </Select>
-              </Form.Item>
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Đơn vị *
+                </label>
+                <SimpleSelect
+                  value={formData.durationType}
+                  onChange={(e) =>
+                    setFormData({ ...formData, durationType: e.target.value })
+                  }
+                >
+                  <option value="">Chọn đơn vị</option>
+                  <option value="days">Ngày</option>
+                  <option value="months">Tháng</option>
+                  <option value="years">Năm</option>
+                </SimpleSelect>
+              </div>
             </Col>
           </Row>
 
-          <Form.Item
-            name="features"
-            label="Tính năng (mỗi dòng một tính năng)"
-            rules={[{ required: true, message: "Vui lòng nhập tính năng!" }]}
-          >
+          <div style={{ marginBottom: 16 }}>
+            <label
+              style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+            >
+              Tính năng (mỗi dòng một tính năng) *
+            </label>
             <TextArea
               rows={4}
               placeholder="Truy cập Community&#10;Chat nhóm không giới hạn&#10;Hỗ trợ 24/7"
+              value={formData.features}
+              onChange={(e) =>
+                setFormData({ ...formData, features: e.target.value })
+              }
             />
-          </Form.Item>
+          </div>
 
-          <Form.Item
-            name="permissions"
-            label="Quyền truy cập"
-            rules={[{ required: true, message: "Vui lòng chọn quyền!" }]}
-          >
-            <Select mode="multiple" placeholder="Chọn quyền truy cập">
-              <Option value="community_access">Truy cập Community</Option>
-              <Option value="group_chat">Chat nhóm</Option>
-              <Option value="project_collaboration">Hợp tác dự án</Option>
-              <Option value="premium_support">Hỗ trợ cao cấp</Option>
-            </Select>
-          </Form.Item>
+          <div style={{ marginBottom: 16 }}>
+            <label
+              style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+            >
+              Quyền truy cập *
+            </label>
+            <MultipleSelect
+              value={formData.permissions}
+              onChange={(value) =>
+                setFormData({ ...formData, permissions: value })
+              }
+              options={permissionOptions}
+              placeholder="Chọn quyền truy cập"
+            />
+          </div>
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="maxProjects" label="Số project tối đa">
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Số project tối đa
+                </label>
                 <InputNumber
                   style={{ width: "100%" }}
                   min={1}
                   placeholder="Để trống = không giới hạn"
+                  value={formData.maxProjects}
+                  onChange={(value) =>
+                    setFormData({ ...formData, maxProjects: value })
+                  }
                 />
-              </Form.Item>
+              </div>
             </Col>
             <Col span={12}>
-              <Form.Item name="maxMembers" label="Số thành viên tối đa">
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Số thành viên tối đa
+                </label>
                 <InputNumber
                   style={{ width: "100%" }}
                   min={1}
                   placeholder="Để trống = không giới hạn"
+                  value={formData.maxMembers}
+                  onChange={(value) =>
+                    setFormData({ ...formData, maxMembers: value })
+                  }
                 />
-              </Form.Item>
+              </div>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                name="isActive"
-                label="Kích hoạt gói"
-                valuePropName="checked"
-              >
-                <Switch />
-              </Form.Item>
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Kích hoạt gói
+                </label>
+                <Switch
+                  checked={formData.isActive}
+                  onChange={(checked) =>
+                    setFormData({ ...formData, isActive: checked })
+                  }
+                />
+              </div>
             </Col>
             <Col span={12}>
-              <Form.Item
-                name="isPopular"
-                label="Gói phổ biến"
-                valuePropName="checked"
-              >
-                <Switch />
-              </Form.Item>
+              <div style={{ marginBottom: 16 }}>
+                <label
+                  style={{ display: "block", marginBottom: 4, fontWeight: 500 }}
+                >
+                  Gói phổ biến
+                </label>
+                <Switch
+                  checked={formData.isPopular}
+                  onChange={(checked) =>
+                    setFormData({ ...formData, isPopular: checked })
+                  }
+                />
+              </div>
             </Col>
           </Row>
 
           <Divider />
 
-          <Form.Item style={{ textAlign: "right", marginBottom: 0 }}>
+          <div style={{ textAlign: "right", marginBottom: 0 }}>
             <Space>
               <Button onClick={() => setModalVisible(false)}>Hủy</Button>
               <Button
                 type="primary"
-                htmlType="submit"
+                onClick={handleSubmit}
                 loading={loading}
                 style={{
                   background: "linear-gradient(135deg, #e74c3c, #c0392b)",
@@ -634,8 +882,8 @@ const AdminSubscriptionPlans = () => {
                 {editingPlan ? "Cập nhật" : "Tạo mới"}
               </Button>
             </Space>
-          </Form.Item>
-        </Form>
+          </div>
+        </div>
       </Modal>
     </PageContainer>
   );
