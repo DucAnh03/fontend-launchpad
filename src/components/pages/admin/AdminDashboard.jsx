@@ -6,490 +6,685 @@ import {
   Statistic,
   Typography,
   Space,
-  Progress,
-  Avatar,
-  List,
-  Badge,
   Button,
   Table,
   Tag,
-  Tooltip,
+  Avatar,
+  Progress,
+  List,
+  Badge,
+  Alert,
+  Timeline,
+  Divider,
 } from "antd";
 import {
   UserOutlined,
   FileTextOutlined,
-  TeamOutlined,
   DollarOutlined,
-  TrophyOutlined,
+  TeamOutlined,
   RiseOutlined,
   FallOutlined,
   EyeOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
-  ExclamationCircleOutlined,
+  WarningOutlined,
+  BellOutlined,
+  TrophyOutlined,
+  StarOutlined,
   CrownOutlined,
-  LineChartOutlined,
-  BarChartOutlined,
-  PieChartOutlined,
+  FireOutlined,
+  ThunderboltOutlined,
+  HeartOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import api from "@/services/api/axios";
 import styled from "styled-components";
 
 const { Title, Text } = Typography;
 
 // Styled Components
-const DashboardContainer = styled.div`
-  padding: 0;
+const PageContainer = styled.div`
+  padding: 24px;
   background: transparent;
+  min-height: 100vh;
 `;
 
-const StatsCard = styled(Card)`
+const WelcomeCard = styled(Card)`
   && {
-    border-radius: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    overflow: hidden;
-    position: relative;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
 
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: ${(props) =>
-        props.accent || "linear-gradient(90deg, #e74c3c, #c0392b)"};
+    .ant-card-body {
+      padding: 32px;
     }
 
+    h1,
+    p {
+      color: white !important;
+      margin: 0;
+    }
+
+    .welcome-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.9) !important;
+
+      .anticon {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+`;
+
+const QuickStatsCard = styled(Card)`
+  && {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    height: 100%;
+
     &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
     }
 
     .ant-statistic-title {
       color: #8c8c8c;
-      font-weight: 500;
       font-size: 14px;
-      margin-bottom: 8px;
+      font-weight: 500;
     }
 
     .ant-statistic-content {
       color: #262626;
       font-weight: 700;
     }
+
+    &.trending-up {
+      border-left: 4px solid #52c41a;
+    }
+
+    &.trending-down {
+      border-left: 4px solid #ff4d4f;
+    }
+
+    &.neutral {
+      border-left: 4px solid #1890ff;
+    }
+
+    &.warning {
+      border-left: 4px solid #fa8c16;
+    }
   }
 `;
 
-const QuickActionCard = styled(Card)`
+const ActivityCard = styled(Card)`
   && {
     border-radius: 12px;
-    border: 1px solid #f0f0f0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    height: 400px;
+
+    .ant-card-body {
+      height: calc(100% - 65px);
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #d9d9d9;
+        border-radius: 2px;
+      }
+    }
+  }
+`;
+
+const QuickActionButton = styled(Button)`
+  && {
+    height: 80px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 2px dashed #d9d9d9;
     transition: all 0.3s ease;
 
     &:hover {
-      border-color: #e74c3c;
-      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.15);
+      border-color: #1890ff;
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
     }
 
-    .ant-card-body {
-      padding: 16px;
-      text-align: center;
+    .anticon {
+      font-size: 24px;
+    }
+
+    span {
+      font-size: 12px;
+      font-weight: 500;
     }
   }
-`;
-
-const WelcomeHeader = styled.div`
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
-  color: white;
-  padding: 32px;
-  border-radius: 16px;
-  margin-bottom: 24px;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: "👑";
-    position: absolute;
-    top: 16px;
-    right: 24px;
-    font-size: 32px;
-    opacity: 0.3;
-  }
-
-  h1 {
-    color: white;
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-  }
-
-  p {
-    color: rgba(255, 255, 255, 0.9);
-    margin: 8px 0 0 0;
-    font-size: 16px;
-  }
-`;
-
-const SimpleChart = styled.div`
-  height: 200px;
-  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      45deg,
-      transparent,
-      rgba(231, 76, 60, 0.1),
-      transparent
-    );
-  }
-`;
-
-const MetricCard = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  text-align: center;
-  border-left: 4px solid ${(props) => props.color || "#e74c3c"};
 `;
 
 export default function AdminDashboard() {
-  const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState({
-    totalUsers: 1250,
-    totalPosts: 3420,
-    totalRecruitments: 180,
-    totalRevenue: 45000,
-    newUsersToday: 28,
-    pendingPosts: 12,
-    activeUsers: 845,
-    conversionRate: 3.2,
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState({
+    stats: {
+      totalUsers: 0,
+      totalPosts: 0,
+      totalRevenue: 0,
+      activeUsers: 0,
+      newUsersToday: 0,
+      pendingPosts: 0,
+      todayRevenue: 0,
+      conversionRate: 0,
+    },
+    recentUsers: [],
+    recentPosts: [],
+    recentPayments: [],
+    systemAlerts: [],
+    activities: [],
   });
 
-  // Recent activities data
-  const recentActivities = [
+  // Fetch dashboard data
+  const fetchDashboardData = async () => {
+    setLoading(true);
+    try {
+      // Mock data - replace with real API calls
+      const mockData = {
+        stats: {
+          totalUsers: 1247,
+          totalPosts: 892,
+          totalRevenue: 45670000,
+          activeUsers: 156,
+          newUsersToday: 23,
+          pendingPosts: 12,
+          todayRevenue: 2340000,
+          conversionRate: 87.5,
+        },
+        recentUsers: [
+          {
+            id: 1,
+            name: "Nguyễn Văn A",
+            email: "nguyenvana@gmail.com",
+            avatar: null,
+            createdAt: new Date(),
+            role: "user",
+            isVerified: true,
+          },
+          {
+            id: 2,
+            name: "Trần Thị B",
+            email: "tranthib@gmail.com",
+            avatar: null,
+            createdAt: new Date(),
+            role: "leader",
+            isVerified: false,
+          },
+        ],
+        recentPosts: [
+          {
+            id: 1,
+            title: "Tuyển Frontend Developer",
+            author: "Nguyễn Văn A",
+            status: "pending",
+            createdAt: new Date(),
+            views: 234,
+          },
+          {
+            id: 2,
+            title: "Chia sẻ kinh nghiệm React",
+            author: "Trần Thị B",
+            status: "approved",
+            createdAt: new Date(),
+            views: 567,
+          },
+        ],
+        recentPayments: [
+          {
+            id: 1,
+            user: "Nguyễn Văn A",
+            amount: 299000,
+            status: "success",
+            method: "vnpay",
+            createdAt: new Date(),
+          },
+        ],
+        systemAlerts: [
+          {
+            id: 1,
+            type: "warning",
+            message: "Có 12 bài viết đang chờ duyệt",
+            time: new Date(),
+          },
+          {
+            id: 2,
+            type: "info",
+            message: "Hệ thống backup đã hoàn thành",
+            time: new Date(),
+          },
+        ],
+        activities: [
+          {
+            id: 1,
+            type: "user_register",
+            message: "Nguyễn Văn A đã đăng ký tài khoản",
+            time: new Date(),
+            icon: <UserOutlined />,
+            color: "blue",
+          },
+          {
+            id: 2,
+            type: "post_created",
+            message: "Trần Thị B đã tạo bài viết mới",
+            time: new Date(),
+            icon: <FileTextOutlined />,
+            color: "green",
+          },
+          {
+            id: 3,
+            type: "payment_success",
+            message: "Thanh toán 299.000đ thành công",
+            time: new Date(),
+            icon: <DollarOutlined />,
+            color: "gold",
+          },
+        ],
+      };
+
+      setDashboardData(mockData);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+
+  // Quick stats data
+  const quickStats = [
     {
-      id: 1,
-      user: "Nguyễn Văn A",
-      action: "Đăng ký tài khoản Premium",
-      time: "5 phút trước",
-      type: "success",
+      title: "Tổng người dùng",
+      value: dashboardData.stats.totalUsers,
+      prefix: <UserOutlined style={{ color: "#1890ff" }} />,
+      suffix: "người",
+      trend: "up",
+      trendValue: 12,
+      className: "trending-up",
     },
     {
-      id: 2,
-      user: "Trần Thị B",
-      action: "Báo cáo bài viết không phù hợp",
-      time: "15 phút trước",
-      type: "warning",
+      title: "Hoạt động hôm nay",
+      value: dashboardData.stats.activeUsers,
+      prefix: <FireOutlined style={{ color: "#52c41a" }} />,
+      suffix: "online",
+      trend: "up",
+      trendValue: 8,
+      className: "trending-up",
     },
     {
-      id: 3,
-      user: "Lê Văn C",
-      action: "Tạo tin tuyển dụng mới",
-      time: "30 phút trước",
-      type: "info",
+      title: "Bài viết chờ duyệt",
+      value: dashboardData.stats.pendingPosts,
+      prefix: <ClockCircleOutlined style={{ color: "#fa8c16" }} />,
+      suffix: "bài",
+      trend: "warning",
+      className: "warning",
     },
     {
-      id: 4,
-      user: "Phạm Thị D",
-      action: "Yêu cầu xác minh tài khoản",
-      time: "1 giờ trước",
-      type: "processing",
+      title: "Doanh thu hôm nay",
+      value: dashboardData.stats.todayRevenue,
+      formatter: (value) => formatCurrency(value),
+      prefix: <DollarOutlined style={{ color: "#52c41a" }} />,
+      trend: "up",
+      trendValue: 23,
+      className: "trending-up",
+    },
+    {
+      title: "Tổng doanh thu",
+      value: dashboardData.stats.totalRevenue,
+      formatter: (value) => formatCurrency(value),
+      prefix: <TrophyOutlined style={{ color: "#722ed1" }} />,
+      className: "neutral",
+    },
+    {
+      title: "Tỉ lệ chuyển đổi",
+      value: dashboardData.stats.conversionRate,
+      precision: 1,
+      suffix: "%",
+      prefix: <ThunderboltOutlined style={{ color: "#eb2f96" }} />,
+      trend: "up",
+      trendValue: 5.2,
+      className: "trending-up",
     },
   ];
 
-  // Quick actions data
-  const quickActions = [
+  // Recent users table columns
+  const userColumns = [
     {
-      title: "Quản lý người dùng",
-      icon: <UserOutlined style={{ fontSize: 24, color: "#3498db" }} />,
-      path: "/admin/users",
-      description: "Xem và quản lý tài khoản",
+      title: "Người dùng",
+      dataIndex: "name",
+      render: (name, record) => (
+        <Space>
+          <Avatar icon={<UserOutlined />} src={record.avatar} />
+          <div>
+            <div style={{ fontWeight: 600 }}>{name}</div>
+            <div style={{ fontSize: 12, color: "#8c8c8c" }}>{record.email}</div>
+          </div>
+        </Space>
+      ),
     },
     {
-      title: "Kiểm duyệt bài viết",
-      icon: <EyeOutlined style={{ fontSize: 24, color: "#e67e22" }} />,
-      path: "/admin/moderation",
-      description: "Duyệt nội dung chờ xử lý",
+      title: "Vai trò",
+      dataIndex: "role",
+      render: (role) => (
+        <Tag
+          color={
+            role === "admin" ? "red" : role === "leader" ? "blue" : "default"
+          }
+        >
+          {role === "admin" ? "Admin" : role === "leader" ? "Leader" : "User"}
+        </Tag>
+      ),
     },
     {
-      title: "Báo cáo thống kê",
-      icon: <TrophyOutlined style={{ fontSize: 24, color: "#27ae60" }} />,
-      path: "/admin/reports",
-      description: "Xem báo cáo chi tiết",
-    },
-    {
-      title: "Cài đặt hệ thống",
-      icon: <CrownOutlined style={{ fontSize: 24, color: "#8e44ad" }} />,
-      path: "/admin/settings",
-      description: "Cấu hình hệ thống",
+      title: "Trạng thái",
+      dataIndex: "isVerified",
+      render: (verified) => (
+        <Tag color={verified ? "green" : "orange"}>
+          {verified ? "Đã xác thực" : "Chưa xác thực"}
+        </Tag>
+      ),
     },
   ];
 
   return (
-    <DashboardContainer>
-      <WelcomeHeader>
-        <h1>Chào mừng Admin! 👑</h1>
-        <p>Tổng quan hệ thống và các chỉ số quan trọng</p>
-      </WelcomeHeader>
+    <PageContainer>
+      {/* Welcome Section */}
+      <WelcomeCard>
+        <Row align="middle" justify="space-between">
+          <Col>
+            <Title level={2} style={{ color: "white", margin: 0 }}>
+              🎉 Chào mừng trở lại, Admin!
+            </Title>
+            <Text style={{ color: "rgba(255,255,255,0.8)", fontSize: 16 }}>
+              Hôm nay là{" "}
+              {new Date().toLocaleDateString("vi-VN", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </Text>
 
-      {/* Stats Cards */}
-      <Row gutter={[24, 24]} style={{ marginBottom: 24 }}>
-        <Col xs={24} sm={12} lg={6}>
-          <StatsCard accent="linear-gradient(135deg, #3498db, #2980b9)">
-            <Statistic
-              title="Tổng người dùng"
-              value={stats.totalUsers}
-              prefix={<UserOutlined />}
-              suffix={
-                <Space>
-                  <RiseOutlined style={{ color: "#52c41a" }} />
-                  <Text style={{ color: "#52c41a", fontSize: 12 }}>
-                    +{stats.newUsersToday}
-                  </Text>
-                </Space>
-              }
+            <div className="welcome-stats" style={{ marginTop: 20 }}>
+              <div className="stat-item">
+                <UserOutlined />
+                <Text style={{ color: "white" }}>
+                  <strong>{dashboardData.stats.newUsersToday}</strong> người
+                  dùng mới
+                </Text>
+              </div>
+              <div className="stat-item">
+                <DollarOutlined />
+                <Text style={{ color: "white" }}>
+                  <strong>
+                    {formatCurrency(dashboardData.stats.todayRevenue)}
+                  </strong>{" "}
+                  doanh thu
+                </Text>
+              </div>
+              <div className="stat-item">
+                <FireOutlined />
+                <Text style={{ color: "white" }}>
+                  <strong>{dashboardData.stats.activeUsers}</strong> đang online
+                </Text>
+              </div>
+            </div>
+          </Col>
+          <Col>
+            <div style={{ textAlign: "center", color: "white" }}>
+              <CrownOutlined
+                style={{ fontSize: 48, marginBottom: 8, opacity: 0.8 }}
+              />
+              <br />
+              <Text style={{ color: "rgba(255,255,255,0.7)" }}>
+                Admin Panel v2.0
+              </Text>
+            </div>
+          </Col>
+        </Row>
+      </WelcomeCard>
+
+      {/* Quick Stats */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        {quickStats.map((stat, index) => (
+          <Col xs={12} sm={8} lg={4} key={index}>
+            <QuickStatsCard className={stat.className}>
+              <Statistic
+                title={stat.title}
+                value={stat.value}
+                formatter={stat.formatter}
+                prefix={stat.prefix}
+                suffix={stat.suffix}
+                precision={stat.precision}
+              />
+              {stat.trend && (
+                <div style={{ marginTop: 8, fontSize: 12 }}>
+                  {stat.trend === "up" && (
+                    <Text type="success">
+                      <RiseOutlined /> +{stat.trendValue}% so với hôm qua
+                    </Text>
+                  )}
+                  {stat.trend === "down" && (
+                    <Text type="danger">
+                      <FallOutlined /> -{stat.trendValue}% so với hôm qua
+                    </Text>
+                  )}
+                  {stat.trend === "warning" && (
+                    <Text style={{ color: "#fa8c16" }}>
+                      <WarningOutlined /> Cần xử lý
+                    </Text>
+                  )}
+                </div>
+              )}
+            </QuickStatsCard>
+          </Col>
+        ))}
+      </Row>
+
+      {/* Quick Actions */}
+      <Card
+        title={
+          <>
+            <ThunderboltOutlined /> Thao tác nhanh
+          </>
+        }
+        style={{ marginBottom: 24 }}
+      >
+        <Row gutter={[16, 16]}>
+          <Col xs={12} sm={6} lg={3}>
+            <Link to="/admin/users">
+              <QuickActionButton block>
+                <UserOutlined />
+                <span>Quản lý User</span>
+              </QuickActionButton>
+            </Link>
+          </Col>
+          <Col xs={12} sm={6} lg={3}>
+            <Link to="/admin/posts">
+              <QuickActionButton block>
+                <FileTextOutlined />
+                <span>Duyệt bài viết</span>
+              </QuickActionButton>
+            </Link>
+          </Col>
+          <Col xs={12} sm={6} lg={3}>
+            <Link to="/admin/payments">
+              <QuickActionButton block>
+                <DollarOutlined />
+                <span>Thanh toán</span>
+              </QuickActionButton>
+            </Link>
+          </Col>
+          <Col xs={12} sm={6} lg={3}>
+            <Link to="/admin/analytics">
+              <QuickActionButton block>
+                <StarOutlined />
+                <span>Thống kê</span>
+              </QuickActionButton>
+            </Link>
+          </Col>
+        </Row>
+      </Card>
+
+      {/* Main Content */}
+      <Row gutter={[16, 16]}>
+        {/* Recent Users */}
+        <Col xs={24} lg={12}>
+          <Card
+            title={
+              <Space>
+                <UserOutlined />
+                Người dùng mới
+                <Badge count={dashboardData.recentUsers.length} />
+              </Space>
+            }
+            extra={<Link to="/admin/users">Xem tất cả</Link>}
+            style={{ height: 400 }}
+          >
+            <Table
+              columns={userColumns}
+              dataSource={dashboardData.recentUsers}
+              pagination={false}
+              size="small"
+              rowKey="id"
             />
-          </StatsCard>
+          </Card>
         </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <StatsCard accent="linear-gradient(135deg, #27ae60, #229954)">
-            <Statistic
-              title="Bài viết"
-              value={stats.totalPosts}
-              prefix={<FileTextOutlined />}
-              suffix={
-                <Badge
-                  count={stats.pendingPosts}
-                  style={{ backgroundColor: "#fa8c16" }}
+
+        {/* System Alerts */}
+        <Col xs={24} lg={12}>
+          <Card
+            title={
+              <Space>
+                <BellOutlined />
+                Thông báo hệ thống
+                <Badge count={dashboardData.systemAlerts.length} />
+              </Space>
+            }
+            style={{ height: 400 }}
+          >
+            <Space direction="vertical" style={{ width: "100%" }}>
+              {dashboardData.systemAlerts.map((alert) => (
+                <Alert
+                  key={alert.id}
+                  message={alert.message}
+                  type={alert.type}
+                  showIcon
+                  closable
                 />
-              }
-            />
-          </StatsCard>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <StatsCard accent="linear-gradient(135deg, #8e44ad, #7d3c98)">
-            <Statistic
-              title="Tin tuyển dụng"
-              value={stats.totalRecruitments}
-              prefix={<TeamOutlined />}
-            />
-          </StatsCard>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <StatsCard accent="linear-gradient(135deg, #e67e22, #d68910)">
-            <Statistic
-              title="Doanh thu"
-              value={stats.totalRevenue}
-              prefix={<DollarOutlined />}
-              suffix="$"
-              precision={0}
-            />
-          </StatsCard>
-        </Col>
-      </Row>
+              ))}
 
-      {/* Simple Charts Section */}
-      <Row gutter={[24, 24]} style={{ marginBottom: 24 }}>
+              <Divider />
+
+              <div style={{ textAlign: "center", color: "#8c8c8c" }}>
+                <CheckCircleOutlined style={{ marginRight: 8 }} />
+                Hệ thống đang hoạt động bình thường
+              </div>
+            </Space>
+          </Card>
+        </Col>
+
+        {/* Recent Activity */}
         <Col xs={24} lg={12}>
-          <Card title="Tăng trưởng người dùng" style={{ borderRadius: 16 }}>
-            <SimpleChart>
-              <LineChartOutlined
-                style={{ fontSize: 48, color: "#e74c3c", marginBottom: 16 }}
-              />
-              <Text strong style={{ fontSize: 16 }}>
-                +{stats.newUsersToday} người dùng hôm nay
-              </Text>
-              <Text type="secondary">Tăng 12% so với tuần trước</Text>
-            </SimpleChart>
-          </Card>
+          <ActivityCard
+            title={
+              <Space>
+                <ClockCircleOutlined />
+                Hoạt động gần đây
+              </Space>
+            }
+          >
+            <Timeline
+              items={dashboardData.activities.map((activity) => ({
+                dot: activity.icon,
+                color: activity.color,
+                children: (
+                  <div>
+                    <div>{activity.message}</div>
+                    <div style={{ fontSize: 12, color: "#8c8c8c" }}>
+                      {new Date(activity.time).toLocaleString("vi-VN")}
+                    </div>
+                  </div>
+                ),
+              }))}
+            />
+          </ActivityCard>
         </Col>
+
+        {/* Performance Chart Placeholder */}
         <Col xs={24} lg={12}>
-          <Card title="Doanh thu theo tháng" style={{ borderRadius: 16 }}>
-            <SimpleChart>
-              <BarChartOutlined
-                style={{ fontSize: 48, color: "#27ae60", marginBottom: 16 }}
-              />
-              <Text strong style={{ fontSize: 16 }}>
-                ${stats.totalRevenue.toLocaleString()}
-              </Text>
-              <Text type="secondary">Tăng 8% so với tháng trước</Text>
-            </SimpleChart>
+          <Card
+            title={
+              <Space>
+                <RiseOutlined />
+                Hiệu suất hệ thống
+              </Space>
+            }
+            style={{ height: 400 }}
+          >
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <div>
+                <Text strong>CPU Usage</Text>
+                <Progress percent={45} strokeColor="#52c41a" />
+              </div>
+              <div>
+                <Text strong>Memory Usage</Text>
+                <Progress percent={67} strokeColor="#1890ff" />
+              </div>
+              <div>
+                <Text strong>Disk Usage</Text>
+                <Progress percent={23} strokeColor="#722ed1" />
+              </div>
+              <div>
+                <Text strong>Network I/O</Text>
+                <Progress percent={89} strokeColor="#fa8c16" />
+              </div>
+
+              <Divider />
+
+              <div style={{ textAlign: "center" }}>
+                <HeartOutlined style={{ color: "#ff4d4f", marginRight: 8 }} />
+                <Text type="success">Hệ thống đang hoạt động tốt</Text>
+              </div>
+            </Space>
           </Card>
         </Col>
       </Row>
-
-      {/* Key Metrics Row */}
-      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
-        <Col xs={24} sm={6}>
-          <MetricCard color="#3498db">
-            <Text strong>Người dùng hoạt động</Text>
-            <Title level={3} style={{ margin: "8px 0", color: "#3498db" }}>
-              {stats.activeUsers}
-            </Title>
-            <Text type="secondary">68% tổng người dùng</Text>
-          </MetricCard>
-        </Col>
-        <Col xs={24} sm={6}>
-          <MetricCard color="#27ae60">
-            <Text strong>Tỉ lệ chuyển đổi</Text>
-            <Title level={3} style={{ margin: "8px 0", color: "#27ae60" }}>
-              {stats.conversionRate}%
-            </Title>
-            <Text type="secondary">+0.8% tuần này</Text>
-          </MetricCard>
-        </Col>
-        <Col xs={24} sm={6}>
-          <MetricCard color="#e67e22">
-            <Text strong>Bài viết chờ duyệt</Text>
-            <Title level={3} style={{ margin: "8px 0", color: "#e67e22" }}>
-              {stats.pendingPosts}
-            </Title>
-            <Text type="secondary">Cần xử lý</Text>
-          </MetricCard>
-        </Col>
-        <Col xs={24} sm={6}>
-          <MetricCard color="#8e44ad">
-            <Text strong>Doanh thu tháng</Text>
-            <Title level={3} style={{ margin: "8px 0", color: "#8e44ad" }}>
-              $45K
-            </Title>
-            <Text type="secondary">+12% so với tháng trước</Text>
-          </MetricCard>
-        </Col>
-      </Row>
-
-      {/* System Health Status */}
-      <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
-        <Col span={24}>
-          <Card title="Trạng thái hệ thống" style={{ borderRadius: 16 }}>
-            <Row gutter={[24, 24]}>
-              <Col xs={24} sm={8}>
-                <Space direction="vertical" size={8} style={{ width: "100%" }}>
-                  <Text strong>CPU Usage</Text>
-                  <Progress
-                    percent={45}
-                    status="active"
-                    strokeColor={{
-                      "0%": "#87d068",
-                      "100%": "#108ee9",
-                    }}
-                  />
-                </Space>
-              </Col>
-              <Col xs={24} sm={8}>
-                <Space direction="vertical" size={8} style={{ width: "100%" }}>
-                  <Text strong>Memory Usage</Text>
-                  <Progress
-                    percent={62}
-                    status="active"
-                    strokeColor={{
-                      "0%": "#ffc53d",
-                      "100%": "#fa8c16",
-                    }}
-                  />
-                </Space>
-              </Col>
-              <Col xs={24} sm={8}>
-                <Space direction="vertical" size={8} style={{ width: "100%" }}>
-                  <Text strong>Disk Usage</Text>
-                  <Progress
-                    percent={78}
-                    status="active"
-                    strokeColor={{
-                      "0%": "#ff7875",
-                      "100%": "#ff4d4f",
-                    }}
-                  />
-                </Space>
-              </Col>
-            </Row>
-
-            <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
-              <Col xs={24} sm={6}>
-                <Card
-                  size="small"
-                  style={{ textAlign: "center", background: "#f6ffed" }}
-                >
-                  <CheckCircleOutlined
-                    style={{ color: "#52c41a", fontSize: 20 }}
-                  />
-                  <div style={{ marginTop: 8 }}>
-                    <Text strong>Database</Text>
-                    <br />
-                    <Text type="success">Online</Text>
-                  </div>
-                </Card>
-              </Col>
-              <Col xs={24} sm={6}>
-                <Card
-                  size="small"
-                  style={{ textAlign: "center", background: "#f6ffed" }}
-                >
-                  <CheckCircleOutlined
-                    style={{ color: "#52c41a", fontSize: 20 }}
-                  />
-                  <div style={{ marginTop: 8 }}>
-                    <Text strong>API Server</Text>
-                    <br />
-                    <Text type="success">Running</Text>
-                  </div>
-                </Card>
-              </Col>
-              <Col xs={24} sm={6}>
-                <Card
-                  size="small"
-                  style={{ textAlign: "center", background: "#fff7e6" }}
-                >
-                  <ClockCircleOutlined
-                    style={{ color: "#fa8c16", fontSize: 20 }}
-                  />
-                  <div style={{ marginTop: 8 }}>
-                    <Text strong>Cache</Text>
-                    <br />
-                    <Text style={{ color: "#fa8c16" }}>Syncing</Text>
-                  </div>
-                </Card>
-              </Col>
-              <Col xs={24} sm={6}>
-                <Card
-                  size="small"
-                  style={{ textAlign: "center", background: "#fff2f0" }}
-                >
-                  <ExclamationCircleOutlined
-                    style={{ color: "#ff4d4f", fontSize: 20 }}
-                  />
-                  <div style={{ marginTop: 8 }}>
-                    <Text strong>Email Service</Text>
-                    <br />
-                    <Text type="danger">Warning</Text>
-                  </div>
-                </Card>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Admin Tasks Table */}
-    </DashboardContainer>
+    </PageContainer>
   );
 }

@@ -1,0 +1,247 @@
+/* RecruitmentComments Styles */
+.recruitment-comments {
+  border-top: 1px solid #f0f0f0;
+  margin-top: 0;
+}
+
+.comment-item {
+  margin-bottom: 16px;
+}
+
+.comment-item .ant-avatar {
+  flex-shrink: 0;
+}
+
+.comment-input-section {
+  margin-bottom: 24px;
+}
+
+.comment-input-section .ant-input {
+  border-radius: 12px;
+  border: 1px solid #e6f3ff;
+  background-color: #fafbfc;
+  transition: all 0.2s ease;
+}
+
+.comment-input-section .ant-input:focus {
+  border-color: #1890ff;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+.comments-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.comments-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.comments-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Action buttons in comments */
+.action-button-modern {
+  color: #8c8c8c !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 4px 8px !important;
+  height: auto !important;
+  font-size: 13px !important;
+  transition: all 0.2s ease !important;
+}
+
+.action-button-modern:hover {
+  color: #1890ff !important;
+  background: rgba(24, 144, 255, 0.04) !important;
+}
+
+.action-button-modern:focus {
+  color: #1890ff !important;
+}
+
+/* Vote buttons specific styling */
+.comment-item .ant-btn[class*="text-blue-600"] {
+  color: #1890ff !important;
+}
+
+.comment-item .ant-btn[class*="text-red-600"] {
+  color: #ff4d4f !important;
+}
+
+/* Reply input styling */
+.comment-item .ant-input {
+  border-radius: 8px;
+  border: 1px solid #e6f3ff;
+  background-color: #fafbfc;
+}
+
+.comment-item .ant-input:focus {
+  border-color: #1890ff;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+/* Comment item hover effect */
+.comment-item > div {
+  transition: all 0.2s ease;
+}
+
+.comment-item > div:hover {
+  background-color: #fafbfc;
+  border-color: #e6f3ff;
+}
+
+/* Nested comments indentation */
+.comment-item.ml-8 {
+  margin-left: 32px;
+  position: relative;
+}
+
+.comment-item.ml-8::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #e6f3ff 0%, transparent 100%);
+}
+
+/* Load more button */
+.comments-list .ant-btn[class*="rounded-full"] {
+  border-radius: 20px;
+  border: 1px solid #e6f3ff;
+  background: #fafbfc;
+  color: #1890ff;
+  transition: all 0.2s ease;
+}
+
+.comments-list .ant-btn[class*="rounded-full"]:hover {
+  background: #e6f3ff;
+  border-color: #1890ff;
+}
+
+/* Vote count styling */
+.comment-item .ant-btn .anticon + span {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Comment content styling */
+.comment-item .ant-typography {
+  line-height: 1.6;
+  color: #262626;
+}
+
+/* Author name styling */
+.comment-item .ant-typography-text-strong {
+  color: #1f1f1f;
+  font-weight: 600;
+}
+
+/* Timestamp styling */
+.comment-item .ant-typography-text-secondary {
+  color: #8c8c8c;
+  font-size: 11px;
+}
+
+/* Empty state styling */
+.recruitment-comments .ant-empty {
+  padding: 40px 20px;
+}
+
+.recruitment-comments .ant-empty-description {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+/* Login prompt styling */
+.recruitment-comments .text-center.p-4 {
+  background: linear-gradient(135deg, #f6f9fc 0%, #eef6ff 100%);
+  border-radius: 12px;
+  border: 1px solid #e6f3ff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .comment-item.ml-8 {
+    margin-left: 16px;
+  }
+  
+  .comment-item.ml-8::before {
+    left: -8px;
+  }
+  
+  .comment-input-section .ant-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+  
+  .comment-item .ant-space {
+    flex-wrap: wrap;
+  }
+  
+  .comment-item .ant-btn {
+    font-size: 12px;
+    padding: 2px 6px;
+  }
+}
+
+/* Animation for comment expansion */
+.recruitment-comments {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Comment thread line for nested replies */
+.comment-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 60px;
+  bottom: -16px;
+  width: 1px;
+  background: linear-gradient(180deg, #e6f3ff 0%, transparent 80%);
+  z-index: 1;
+}
+
+/* Hide line for last comment in thread */
+.comment-item:last-child::after {
+  display: none;
+}
+
+/* Button group styling */
+.comment-item .ant-space-item:not(:last-child) {
+  margin-right: 8px;
+}
+
+/* Success/Error message styling within comments */
+.comment-item .ant-message {
+  position: relative;
+  top: 0;
+  margin: 8px 0;
+}

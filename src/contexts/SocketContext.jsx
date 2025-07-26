@@ -16,11 +16,11 @@ const SocketContext = createContext({
   isConnected: false,
   unreadCount: 0,
   onlineUsers: [],
-  
+
   // Message functions
   sendPrivateMessage: () => {},
   sendGroupMessage: () => {},
-  
+
   // Event listeners
   onReceiveMessage: () => {},
   offReceiveMessage: () => {},
@@ -28,7 +28,7 @@ const SocketContext = createContext({
   offMessageNotification: () => {},
   onError: () => {},
   offError: () => {},
-  
+
   // Utilities
   clearNotifications: () => {},
   markConversationAsRead: () => {},
@@ -52,7 +52,7 @@ export const SocketProvider = ({ children }) => {
   const errorCallbacks = useRef(new Set());
 
   // ===== EVENT LISTENER MANAGEMENT =====
-  
+
   const onReceiveMessage = useCallback((callback) => {
     receiveMessageCallbacks.current.add(callback);
   }, []);
@@ -78,43 +78,51 @@ export const SocketProvider = ({ children }) => {
   }, []);
 
   // ===== MESSAGE SENDING FUNCTIONS =====
-  
-  const sendPrivateMessage = useCallback((data) => {
-    console.log("🚀 [SocketContext] Gửi tin nhắn riêng tư:", data);
-    
-    if (socket && isConnected) {
-      socket.emit('send_private_message', {
-        receiverId: data.receiverId,
-        content: data.content,
-        messageType: data.messageType || 'text',
-        attachment: data.attachment,
-        tempId: data.tempId || `temp_${Date.now()}_${Math.random()}`
-      });
-    } else {
-      console.error('❌ Socket chưa kết nối, không thể gửi tin nhắn riêng tư');
-      message.error('Không thể gửi tin nhắn. Vui lòng kiểm tra kết nối.');
-    }
-  }, [socket, isConnected]);
 
-  const sendGroupMessage = useCallback((data) => {
-    console.log("🚀 [SocketContext] Gửi tin nhắn nhóm:", data);
-    
-    if (socket && isConnected) {
-      socket.emit('send_group_message', {
-        conversationId: data.conversationId,
-        content: data.content,
-        messageType: data.messageType || 'text',
-        attachment: data.attachment,
-        tempId: data.tempId || `temp_${Date.now()}_${Math.random()}`
-      });
-    } else {
-      console.error('❌ Socket chưa kết nối, không thể gửi tin nhắn nhóm');
-      message.error('Không thể gửi tin nhắn. Vui lòng kiểm tra kết nối.');
-    }
-  }, [socket, isConnected]);
+  const sendPrivateMessage = useCallback(
+    (data) => {
+      console.log("🚀 [SocketContext] Gửi tin nhắn riêng tư:", data);
+
+      if (socket && isConnected) {
+        socket.emit("send_private_message", {
+          receiverId: data.receiverId,
+          content: data.content,
+          messageType: data.messageType || "text",
+          attachment: data.attachment,
+          tempId: data.tempId || `temp_${Date.now()}_${Math.random()}`,
+        });
+      } else {
+        console.error(
+          "❌ Socket chưa kết nối, không thể gửi tin nhắn riêng tư"
+        );
+        message.error("Không thể gửi tin nhắn. Vui lòng kiểm tra kết nối.");
+      }
+    },
+    [socket, isConnected]
+  );
+
+  const sendGroupMessage = useCallback(
+    (data) => {
+      console.log("🚀 [SocketContext] Gửi tin nhắn nhóm:", data);
+
+      if (socket && isConnected) {
+        socket.emit("send_group_message", {
+          conversationId: data.conversationId,
+          content: data.content,
+          messageType: data.messageType || "text",
+          attachment: data.attachment,
+          tempId: data.tempId || `temp_${Date.now()}_${Math.random()}`,
+        });
+      } else {
+        console.error("❌ Socket chưa kết nối, không thể gửi tin nhắn nhóm");
+        message.error("Không thể gửi tin nhắn. Vui lòng kiểm tra kết nối.");
+      }
+    },
+    [socket, isConnected]
+  );
 
   // ===== UTILITY FUNCTIONS =====
-  
+
   const clearNotifications = useCallback(() => {
     setUnreadConversations(new Set());
   }, []);
@@ -127,36 +135,40 @@ export const SocketProvider = ({ children }) => {
     });
   }, []);
 
-  const isConversationUnread = useCallback((conversationId) => {
-    return unreadConversations.has(conversationId);
-  }, [unreadConversations]);
+  const isConversationUnread = useCallback(
+    (conversationId) => {
+      return unreadConversations.has(conversationId);
+    },
+    [unreadConversations]
+  );
 
   // ===== SOCKET CONNECTION MANAGEMENT =====
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
-    
+
     console.log("🔍 [SocketContext] Debug info:", {
       user: user?.id || user?._id,
       hasToken: !!token,
       tokenLength: token?.length,
-      serverUrl: "http://localhost:3000" // Backend port 3000
+      serverUrl: "http://localhost:5000", // Backend port 3000
     });
-    
+
     if (user && token) {
       // Tạo kết nối socket mới - phù hợp với backend socketHandler.js
-      const newSocket = io("http://localhost:3000", { // Backend chạy port 3000
+      const newSocket = io("http://localhost:5000", {
+        // Backend chạy port 3000
         extraHeaders: {
           Authorization: `Bearer ${token}`, // Chú ý: Authorization với A hoa
         },
         auth: {
-          token: `Bearer ${token}` // Thêm auth object cho đảm bảo
+          token: `Bearer ${token}`, // Thêm auth object cho đảm bảo
         },
         cors: {
           origin: "http://localhost:3001", // Frontend có thể chạy port 3001
           credentials: true,
         },
-        transports: ['websocket', 'polling'],
+        transports: ["websocket", "polling"],
         autoConnect: true,
         reconnection: true,
         reconnectionAttempts: 5,
@@ -164,7 +176,7 @@ export const SocketProvider = ({ children }) => {
       });
 
       // ===== CONNECTION EVENTS =====
-      
+
       newSocket.on("connect", () => {
         console.log("✅ Socket.IO đã kết nối với ID:", newSocket.id);
         setSocket(newSocket);
@@ -175,10 +187,10 @@ export const SocketProvider = ({ children }) => {
         console.log("❌ Socket.IO đã ngắt kết nối. Lý do:", reason);
         setSocket(null);
         setIsConnected(false);
-        
+
         // Hiển thị thông báo nếu mất kết nối không mong muốn
-        if (reason === 'io server disconnect') {
-          message.warning('Kết nối với server đã bị ngắt');
+        if (reason === "io server disconnect") {
+          message.warning("Kết nối với server đã bị ngắt");
         }
       });
 
@@ -189,7 +201,7 @@ export const SocketProvider = ({ children }) => {
       });
 
       // ===== ONLINE USERS TRACKING =====
-      
+
       newSocket.on("users_online", (users) => {
         console.log("👥 Danh sách user online:", users);
         setOnlineUsers(users || []);
@@ -197,25 +209,28 @@ export const SocketProvider = ({ children }) => {
 
       newSocket.on("user_online", (userId) => {
         console.log("🟢 User online:", userId);
-        setOnlineUsers(prev => [...new Set([...prev, userId])]);
+        setOnlineUsers((prev) => [...new Set([...prev, userId])]);
       });
 
       newSocket.on("user_offline", (userId) => {
         console.log("🔴 User offline:", userId);
-        setOnlineUsers(prev => prev.filter(id => id !== userId));
+        setOnlineUsers((prev) => prev.filter((id) => id !== userId));
       });
 
       // ===== MESSAGE EVENTS =====
-      
+
       newSocket.on("receiveMessage", (messageData) => {
-        console.log("✅ [SocketContext] Đã nhận 'receiveMessage':", messageData);
-        
+        console.log(
+          "✅ [SocketContext] Đã nhận 'receiveMessage':",
+          messageData
+        );
+
         // Gọi tất cả các callbacks đã đăng ký
         receiveMessageCallbacks.current.forEach((callback) => {
           try {
             callback(messageData);
           } catch (error) {
-            console.error('❌ Lỗi khi xử lý callback receiveMessage:', error);
+            console.error("❌ Lỗi khi xử lý callback receiveMessage:", error);
           }
         });
       });
@@ -225,7 +240,7 @@ export const SocketProvider = ({ children }) => {
 
         if (notification?.senderName && notification?.conversationId) {
           // Hiển thị notification
-          const notificationContent = notification.content || 'Tin nhắn mới';
+          const notificationContent = notification.content || "Tin nhắn mới";
           message.info(`${notification.senderName}: ${notificationContent}`, 3);
 
           // Cập nhật unread count
@@ -241,17 +256,17 @@ export const SocketProvider = ({ children }) => {
             try {
               callback(notification);
             } catch (error) {
-              console.error('❌ Lỗi khi xử lý callback notification:', error);
+              console.error("❌ Lỗi khi xử lý callback notification:", error);
             }
           });
         }
       });
 
       // ===== ERROR EVENTS =====
-      
+
       newSocket.on("sendMessage_error", (error) => {
         console.error("❌ [SocketContext] Lỗi gửi tin nhắn:", error);
-        const errorMessage = error?.message || 'Có lỗi xảy ra khi gửi tin nhắn';
+        const errorMessage = error?.message || "Có lỗi xảy ra khi gửi tin nhắn";
         message.error(`Lỗi: ${errorMessage}`);
 
         // Gọi callbacks error
@@ -259,17 +274,19 @@ export const SocketProvider = ({ children }) => {
           try {
             callback(error);
           } catch (err) {
-            console.error('❌ Lỗi khi xử lý callback error:', err);
+            console.error("❌ Lỗi khi xử lý callback error:", err);
           }
         });
       });
 
       // ===== GROUP SPECIFIC EVENTS (có thể thêm sau) =====
-      
+
       newSocket.on("group_member_added", (data) => {
         console.log("👥 Thành viên mới được thêm vào nhóm:", data);
         if (data?.memberName && data?.groupName) {
-          message.info(`${data.memberName} đã được thêm vào nhóm ${data.groupName}`);
+          message.info(
+            `${data.memberName} đã được thêm vào nhóm ${data.groupName}`
+          );
         }
       });
 
@@ -295,7 +312,6 @@ export const SocketProvider = ({ children }) => {
         setIsConnected(false);
         setOnlineUsers([]);
       };
-      
     } else if (!user && socket) {
       // User đã logout, ngắt kết nối socket
       console.log("👤 User logout, ngắt kết nối socket");
@@ -308,17 +324,17 @@ export const SocketProvider = ({ children }) => {
   }, [user]); // Chỉ depend vào user
 
   // ===== CONTEXT VALUE =====
-  
+
   const contextValue = {
     socket,
     isConnected,
     unreadCount: unreadConversations.size,
     onlineUsers,
-    
+
     // Message functions
     sendPrivateMessage,
     sendGroupMessage,
-    
+
     // Event listeners
     onReceiveMessage,
     offReceiveMessage,
@@ -326,7 +342,7 @@ export const SocketProvider = ({ children }) => {
     offMessageNotification,
     onError,
     offError,
-    
+
     // Utilities
     clearNotifications,
     markConversationAsRead,
@@ -347,7 +363,7 @@ export const useMessageListener = (callback) => {
   const { onReceiveMessage, offReceiveMessage } = useSocket();
 
   useEffect(() => {
-    if (typeof callback === 'function') {
+    if (typeof callback === "function") {
       onReceiveMessage(callback);
       return () => offReceiveMessage(callback);
     }
@@ -359,7 +375,7 @@ export const useNotificationListener = (callback) => {
   const { onMessageNotification, offMessageNotification } = useSocket();
 
   useEffect(() => {
-    if (typeof callback === 'function') {
+    if (typeof callback === "function") {
       onMessageNotification(callback);
       return () => offMessageNotification(callback);
     }
@@ -371,7 +387,7 @@ export const useErrorListener = (callback) => {
   const { onError, offError } = useSocket();
 
   useEffect(() => {
-    if (typeof callback === 'function') {
+    if (typeof callback === "function") {
       onError(callback);
       return () => offError(callback);
     }

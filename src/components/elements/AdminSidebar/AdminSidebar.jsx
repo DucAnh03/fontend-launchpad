@@ -238,56 +238,7 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
       label: collapsed ? null : <Link to="/admin/users">Người dùng</Link>,
       tooltip: "Quản lý người dùng (12 mới)",
     },
-    {
-      key: "/admin/posts",
-      icon: (
-        <Badge count={5} size="small" offset={[8, -8]}>
-          <FileTextOutlined />
-        </Badge>
-      ),
-      label: collapsed ? null : <Link to="/admin/posts">Bài viết</Link>,
-      tooltip: "Quản lý bài viết (5 chờ duyệt)",
-    },
-    {
-      key: "/admin/recruitments",
-      icon: <TeamOutlined />,
-      label: collapsed ? null : (
-        <Link to="/admin/recruitments">Tuyển dụng</Link>
-      ),
-      tooltip: "Quản lý tuyển dụng",
-    },
   ];
-
-  // Analytics & Reports
-  const analyticsItems = {
-    key: "analytics-group",
-    label: collapsed ? null : "Phân tích & Báo cáo",
-    type: "group",
-    children: [
-      {
-        key: "/admin/analytics",
-        icon: <LineChartOutlined />,
-        label: collapsed ? null : (
-          <Link to="/admin/analytics">Phân tích dữ liệu</Link>
-        ),
-        tooltip: "Phân tích dữ liệu",
-      },
-      {
-        key: "/admin/reports",
-        icon: <BarChartOutlined />,
-        label: collapsed ? null : <Link to="/admin/reports">Báo cáo</Link>,
-        tooltip: "Báo cáo & Thống kê",
-      },
-      {
-        key: "/admin/audit",
-        icon: <AuditOutlined />,
-        label: collapsed ? null : (
-          <Link to="/admin/audit">Nhật ký hệ thống</Link>
-        ),
-        tooltip: "Nhật ký hệ thống",
-      },
-    ],
-  };
 
   // Business & Finance
   const businessItems = {
@@ -306,55 +257,12 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
         tooltip: "Quản lý thanh toán (3 cần xử lý)",
       },
       {
-        key: "/admin/subscriptions",
+        key: "/admin/subscription-plans",
         icon: <GiftOutlined />,
         label: collapsed ? null : (
-          <Link to="/admin/subscriptions">Gói dịch vụ</Link>
+          <Link to="/admin/subscription-plans">Gói dịch vụ</Link>
         ),
         tooltip: "Quản lý gói dịch vụ",
-      },
-    ],
-  };
-
-  // System & Security
-  const systemItems = {
-    key: "system-group",
-    label: collapsed ? null : "Hệ thống & Bảo mật",
-    type: "group",
-    children: [
-      {
-        key: "/admin/moderation",
-        icon: (
-          <Badge count={8} size="small" offset={[8, -8]}>
-            <EyeOutlined />
-          </Badge>
-        ),
-        label: collapsed ? null : (
-          <Link to="/admin/moderation">Kiểm duyệt</Link>
-        ),
-        tooltip: "Kiểm duyệt nội dung (8 chờ)",
-      },
-      {
-        key: "/admin/security",
-        icon: <SafetyCertificateOutlined />,
-        label: collapsed ? null : <Link to="/admin/security">Bảo mật</Link>,
-        tooltip: "Cài đặt bảo mật",
-      },
-      {
-        key: "/admin/notifications",
-        icon: <BellOutlined />,
-        label: collapsed ? null : (
-          <Link to="/admin/notifications">Thông báo</Link>
-        ),
-        tooltip: "Quản lý thông báo",
-      },
-      {
-        key: "/admin/database",
-        icon: <DatabaseOutlined />,
-        label: collapsed ? null : (
-          <Link to="/admin/database">Cơ sở dữ liệu</Link>
-        ),
-        tooltip: "Quản lý CSDL",
       },
     ],
   };
@@ -363,11 +271,9 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
   const allItems = [
     ...coreItems,
     { type: "divider", key: "divider-1" },
-    ...(collapsed ? analyticsItems.children : [analyticsItems]),
+
     { type: "divider", key: "divider-2" },
     ...(collapsed ? businessItems.children : [businessItems]),
-    { type: "divider", key: "divider-3" },
-    ...(collapsed ? systemItems.children : [systemItems]),
   ];
 
   return (
@@ -432,44 +338,6 @@ export default function AdminSidebar({ collapsed, setCollapsed }) {
           paddingBottom: "80px",
         }}
       />
-
-      {/* Settings at bottom */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 16,
-          left: 0,
-          right: 0,
-          padding: collapsed ? "0 16px" : "0 8px",
-        }}
-      >
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={
-            pathname === "/admin/settings" ? ["/admin/settings"] : []
-          }
-          items={[
-            {
-              key: "/admin/settings",
-              icon: collapsed ? (
-                <Tooltip title="Cài đặt hệ thống" placement="right">
-                  <SettingOutlined />
-                </Tooltip>
-              ) : (
-                <SettingOutlined />
-              ),
-              label: collapsed ? null : (
-                <Link to="/admin/settings">Cài đặt</Link>
-              ),
-            },
-          ]}
-          style={{
-            borderRight: "none",
-            backgroundColor: "transparent",
-          }}
-        />
-      </div>
     </StyledSider>
   );
 }
